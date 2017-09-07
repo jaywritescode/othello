@@ -183,7 +183,7 @@ public class Board {
 
         @Override
         public String toString() {
-            return color.map(c -> c == Color.WHITE ? "\u25ef" : "\u2b24").orElse(" ");
+            return color.map(c -> c == Color.WHITE ? "\u25cb" : "\u25cf").orElse(" ");
         }
 
         @Override
