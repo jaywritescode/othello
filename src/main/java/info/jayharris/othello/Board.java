@@ -105,7 +105,7 @@ public class Board {
         public final int RANK, FILE;
         private Optional<Color> color;
 
-        private Optional<Square> nw, n, ne, e, se, s, sw, w;
+        private Square nw, n, ne, e, se, s, sw, w;
 
         public Square(int rank, int file) {
             this.RANK = rank;
@@ -125,58 +125,58 @@ public class Board {
             return color.isPresent();
         }
 
-        public Optional<Square> getNW() {
+        public Square getNW() {
             if (nw == null) {
-                nw = (RANK - 1 >= 0 && FILE - 1 >= 0 ? Optional.of(squares[RANK - 1][FILE - 1]) : Optional.empty());
+                nw = (RANK - 1 >= 0 && FILE - 1 >= 0 ? squares[RANK - 1][FILE - 1] : null);
             }
             return nw;
         }
 
-        public Optional<Square> getN() {
+        public Square getN() {
             if (n == null) {
-                n = (RANK - 1 >= 0 ? Optional.of(squares[RANK - 1][FILE]) : Optional.empty());
+                n = (RANK - 1 >= 0 ? squares[RANK - 1][FILE] : null);
             }
-            return nw;
+            return n;
         }
 
-        public Optional<Square> getNE() {
+        public Square getNE() {
             if (ne == null) {
-                ne = (RANK - 1 >= 0 && FILE + 1 < SIZE ? Optional.of(squares[RANK - 1][FILE + 1]) : Optional.empty());
+                ne = (RANK - 1 >= 0 && FILE + 1 < SIZE ? squares[RANK - 1][FILE + 1] : null);
             }
             return ne;
         }
 
-        public Optional<Square> getE() {
+        public Square getE() {
             if (e == null) {
-                e = (FILE + 1 < SIZE ? Optional.of(squares[RANK][FILE + 1]) : Optional.empty());
+                e = (FILE + 1 < SIZE ? squares[RANK][FILE + 1] : null);
             }
             return e;
         }
 
-        public Optional<Square> getSE() {
+        public Square getSE() {
             if (se == null) {
-                se = (RANK + 1 < SIZE && FILE + 1 < SIZE ? Optional.of(squares[RANK + 1][FILE + 1]) : Optional.empty());
+                se = (RANK + 1 < SIZE && FILE + 1 < SIZE ? squares[RANK + 1][FILE + 1] : null);
             }
             return se;
         }
 
-        public Optional<Square> getS() {
+        public Square getS() {
             if (s == null) {
-                s = (RANK + 1 < SIZE ? Optional.of(squares[RANK + 1][FILE]) : Optional.empty());
+                s = (RANK + 1 < SIZE ? squares[RANK + 1][FILE] : null);
             }
             return s;
         }
 
-        public Optional<Square> getSW() {
+        public Square getSW() {
             if (sw == null) {
-                sw = (RANK + 1 < SIZE && FILE - 1 >= 0 ? Optional.of(squares[RANK + 1][FILE - 1]) : Optional.empty());
+                sw = (RANK + 1 < SIZE && FILE - 1 >= 0 ? squares[RANK + 1][FILE - 1] : null);
             }
             return sw;
         }
 
-        public Optional<Square> getW() {
+        public Square getW() {
             if (w == null) {
-                w = (FILE - 1 >= 0 ? Optional.of(squares[RANK][FILE - 1]) : Optional.empty());
+                w = (FILE - 1 >= 0 ? squares[RANK][FILE - 1] : null);
             }
             return w;
         }
@@ -201,11 +201,51 @@ public class Board {
         }
     }
 
+    class DirectionalIterator implements Iterator<Square> {
+
+        Square current;
+        Function<Square, Square> direction;
+
+        DirectionalIterator(Square start, Direction direction) {
+            this.current = start;
+            this.direction = direction.fn;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return Objects.nonNull(direction.apply(current));
+        }
+
+        @Override
+        public Square next() {
+            return direction.apply(current);
+        }
+    }
+
+    enum Direction {
+        NW(Square::getNW),
+        N(Square::getN),
+        NE(Square::getNE),
+        E(Square::getE),
+        SE(Square::getSE),
+        S(Square::getS),
+        SW(Square::getSW),
+        W(Square::getW);
+
+        public final Function<Square, Square> fn;
+
+        Direction(Function<Square, Square> fn) {
+            this.fn = fn;
+        }
+    }
+
     public static void main(String... args) {
         Board board = Board.init();
 
-        System.out.println(board.squares[3][3]);
-        System.out.println(board.squares[3][4]);
+        System.out.println(board);
+
+        board.setPiece(board.getSquare(3,2), Color.BLACK);
+
         System.out.println(board);
     }
 }
