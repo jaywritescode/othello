@@ -85,19 +85,39 @@ public class Board {
         return board;
     }
 
-    @Override
-    public String toString() {
+    public String pretty() {
         final StringBuilder sb = new StringBuilder();
 
         sb.append("\n  abcdefgh\n");
         for (int rank = 0; rank < SIZE; ++rank) {
             sb.append("\n").append(rank + 1).append(" ");
             for (int file = 0; file < SIZE; ++file) {
-                sb.append(squares[rank][file].toString());
+                sb.append(squares[rank][file].pretty());
             }
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Board{");
+        sb.append("occupied=").append(occupied);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Board board = (Board) o;
+        return Arrays.equals(squares, board.squares);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(squares);
     }
 
     class Square {
@@ -181,9 +201,18 @@ public class Board {
             return w;
         }
 
+        public String pretty() {
+            return color.map(c -> c == Color.WHITE ? "\u25cb" : "\u25cf").orElse(" ");
+        }
+
         @Override
         public String toString() {
-            return color.map(c -> c == Color.WHITE ? "\u25cb" : "\u25cf").orElse(" ");
+            final StringBuffer sb = new StringBuffer("Square{");
+            sb.append("RANK=").append(RANK);
+            sb.append(", FILE=").append(FILE);
+            sb.append(", color=").append(color);
+            sb.append('}');
+            return sb.toString();
         }
 
         @Override
