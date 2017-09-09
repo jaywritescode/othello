@@ -1,9 +1,10 @@
 package info.jayharris.othello;
 
+import info.jayharris.othello.Othello.Color;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 import java.util.function.Function;
-
-import info.jayharris.othello.Othello.*;
 
 public class Board {
 
@@ -11,7 +12,6 @@ public class Board {
 
     private final Square[][] squares;
     private final Set<Square> occupied;
-
 
     private Board() {
         squares = new Square[SIZE][SIZE];
@@ -29,41 +29,38 @@ public class Board {
             return false;
         }
 
-        int numFlipped = flipInAllDirections(square, color);
-        if (numFlipped == 0) {
-            return false;
+        if (flipInAllDirections(square, color)) {
+            square.setColor(color);
+            return true;
         }
-
-        square.setColor(color);
-        return true;
+        return false;
     }
 
-    private int flipInAllDirections(Square square, Color color) {
-        return 0;
+    private boolean flipInAllDirections(Square square, Color color) {
+        return EnumSet.allOf(Direction.class).parallelStream()
+                       .map(dir -> flipInDirection(square, color, dir))
+                       .reduce(false, Boolean::logicalOr);
     }
 
-    private int flipInDirection(Square square, Color color, Function<Square, Optional<Square>> direction) {
-        int count = 0;
-        Optional<Square> nextOpt;
-        Square next;
+    private boolean flipInDirection(Square square, Color color, Direction direction) {
+        boolean success = false;
+        DirectionalIterator iter = DirectionalIterator.INSTANCE.reset(square, direction);
 
-        while (true) {
-            nextOpt = direction.apply(square);
-            if (!nextOpt.isPresent()) {
-                return count;
-            }
-            next = nextOpt.get();
-            if (!next.color.isPresent()) {
-                return count;
-            }
-            if (next.color.get() == color) {
-                return count;
-            }
-            else {
-                next.flip();
-                ++count;
-            }
+        while (iter.hasNext() && (square = iter.next()).color.filter(c -> c != color).isPresent()) {
+            square.flip();
+            success = true;
         }
+
+        return success;
+    }
+
+    private Square getSquare(int rank, int file) {
+        return squares[rank][file];
+    }
+
+    public Square getSquare(String s) {
+        char f = s.charAt(0), r = s.charAt(1);
+        return getSquare(r - '1', f - 'a');
     }
 
     public static Board init() {
@@ -125,6 +122,7 @@ public class Board {
         public final int RANK, FILE;
         private Optional<Color> color;
 
+        @Nullable
         private Square nw, n, ne, e, se, s, sw, w;
 
         public Square(int rank, int file) {
@@ -230,24 +228,26 @@ public class Board {
         }
     }
 
-    class DirectionalIterator implements Iterator<Square> {
+    private enum DirectionalIterator implements Iterator<Square> {
+        INSTANCE;
 
         Square current;
-        Function<Square, Square> direction;
+        Direction direction;
 
-        DirectionalIterator(Square start, Direction direction) {
-            this.current = start;
-            this.direction = direction.fn;
+        DirectionalIterator reset(Square current, Direction direction) {
+            this.current = current;
+            this.direction = direction;
+            return INSTANCE;
         }
 
         @Override
         public boolean hasNext() {
-            return Objects.nonNull(direction.apply(current));
+            return Objects.nonNull(direction.go(current));
         }
 
         @Override
         public Square next() {
-            return direction.apply(current);
+            return direction.go(current);
         }
     }
 
@@ -261,20 +261,28 @@ public class Board {
         SW(Square::getSW),
         W(Square::getW);
 
-        public final Function<Square, Square> fn;
+        private final Function<Square, Square> fn;
 
         Direction(Function<Square, Square> fn) {
             this.fn = fn;
+        }
+
+        Square go(Square from) {
+            return fn.apply(from);
         }
     }
 
     public static void main(String... args) {
         Board board = Board.init();
 
-        System.out.println(board);
+        System.out.println(board.pretty());
 
-        board.setPiece(board.getSquare(3,2), Color.BLACK);
+        board.setPiece(board.getSquare("c4"), Color.BLACK);
 
-        System.out.println(board);
+        System.out.println(board.pretty());
+
+        board.setPiece(board.getSquare("e3"), Color.WHITE);
+
+        System.out.println(board.pretty());
     }
 }
