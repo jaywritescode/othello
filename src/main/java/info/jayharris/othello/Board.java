@@ -6,7 +6,6 @@ import org.apache.commons.collections4.iterators.ZippingIterator;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class Board {
 
@@ -26,6 +25,13 @@ public class Board {
         occupied = new HashSet<>();
     }
 
+    /**
+     * Put a disc of the given color on the given square, if it's a legal move.
+     *
+     * @param square the square
+     * @param color the color
+     * @return true iff the disc was successfully put on the square
+     */
     public boolean setPiece(Square square, Color color) {
         if (square.isOccupied()) {
             return false;
@@ -56,10 +62,6 @@ public class Board {
         return success;
     }
 
-    protected List<Square> asListOfSquares() {
-        return Arrays.stream(squares).flatMap(Arrays::stream).collect(Collectors.toList());
-    }
-
     protected Square getSquare(int rank, int file) {
         return squares[rank][file];
     }
@@ -88,6 +90,11 @@ public class Board {
         return getSquare(file, rank);
     }
 
+    /**
+     * Create the board for a new game.
+     *
+     * @return the board
+     */
     public static Board init() {
         Board board = new Board();
 
@@ -107,6 +114,11 @@ public class Board {
         return board;
     }
 
+    /**
+     * Get a pretty text-string version of the board.
+     *
+     * @return a representation of the board
+     */
     public String pretty() {
         final StringBuilder sb = new StringBuilder();
         final Iterator<Square> squares = iterator();
@@ -193,6 +205,12 @@ public class Board {
 
         private Square nw, n, ne, e, se, s, sw, w;
 
+        /**
+         * Constructor.
+         *
+         * @param rank the square's rank. The top row of the board is rank 0.
+         * @param file the square's file. The left column of the board is file 0.
+         */
         public Square(int rank, int file) {
             this.RANK = rank;
             this.FILE = file;
@@ -203,6 +221,11 @@ public class Board {
             this.color = color;
         }
 
+        /**
+         * Get the square's color.
+         *
+         * @return the square's color
+         */
         public Color getColor() {
             return color;
         }
@@ -211,6 +234,11 @@ public class Board {
             setColor(color.opposite());
         }
 
+        /**
+         * Get whether this square is currently occupied.
+         *
+         * @return true iff this square is occupied
+         */
         public boolean isOccupied() {
             return Objects.nonNull(color);
         }
@@ -271,6 +299,11 @@ public class Board {
             return w;
         }
 
+        /**
+         * Get a pretty text-version of this square.
+         *
+         * @return a representation of this square
+         */
         public String pretty() {
             if (color == Color.WHITE) {
                 return "\u25cb";
@@ -283,6 +316,11 @@ public class Board {
             }
         }
 
+        /**
+         * Get the algebraic notation representation of this square.
+         *
+         * @return the square's algebraic notation
+         */
         public String algebraicNotation() {
             return String.format("%s%s", 'a' + FILE, '1' + RANK);
         }
@@ -312,6 +350,10 @@ public class Board {
         }
     }
 
+    /**
+     * An iterator that traverses the board in a given direction and stops
+     * when it passes the edge of the board.
+     */
     private enum DirectionalIterator implements Iterator<Square> {
         INSTANCE;
 
