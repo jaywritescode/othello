@@ -1,9 +1,12 @@
 package info.jayharris.othello;
 
 import info.jayharris.othello.Othello.Color;
+import org.apache.commons.collections4.IteratorUtils;
+import org.apache.commons.collections4.iterators.ZippingIterator;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Board {
 
@@ -36,7 +39,7 @@ public class Board {
     }
 
     private boolean flipInAllDirections(Square square, Color color) {
-        return EnumSet.allOf(Direction.class).parallelStream()
+        return EnumSet.allOf(Direction.class).stream()
                        .map(dir -> flipInDirection(square, color, dir))
                        .reduce(false, Boolean::logicalOr);
     }
@@ -45,7 +48,7 @@ public class Board {
         boolean success = false;
         DirectionalIterator iter = DirectionalIterator.INSTANCE.reset(square, direction);
 
-        while (iter.hasNext() && (square = iter.next()).color.filter(c -> c != color).isPresent()) {
+        while (iter.hasNext() && (square = iter.next()).color == color.opposite()) {
             square.flip();
             success = true;
         }
@@ -53,13 +56,36 @@ public class Board {
         return success;
     }
 
-    private Square getSquare(int rank, int file) {
+    protected List<Square> asListOfSquares() {
+        return Arrays.stream(squares).flatMap(Arrays::stream).collect(Collectors.toList());
+    }
+
+    protected Square getSquare(int rank, int file) {
         return squares[rank][file];
     }
 
+    /**
+     * Get the square given by the file and rank in algebraic notation
+     *
+     * @param file the file
+     * @param rank the rank
+     * @return the square
+     */
+    public Square getSquare(char file, int rank) {
+        return getSquare(rank - 1, file - 'a');
+    }
+
+    /**
+     * Get the square given its algebraic notation
+     *
+     * @param s the algebraic notation
+     * @return the square
+     */
     public Square getSquare(String s) {
-        char f = s.charAt(0), r = s.charAt(1);
-        return getSquare(r - '1', f - 'a');
+        char file = s.charAt(0);
+        int rank = s.charAt(1) - '1';
+
+        return getSquare(file, rank);
     }
 
     public static Board init() {
@@ -83,16 +109,43 @@ public class Board {
 
     public String pretty() {
         final StringBuilder sb = new StringBuilder();
+        final Iterator<Square> squares = iterator();
 
         sb.append("\n  abcdefgh\n");
-        for (int rank = 0; rank < SIZE; ++rank) {
-            sb.append("\n").append(rank + 1).append(" ");
-            for (int file = 0; file < SIZE; ++file) {
-                sb.append(squares[rank][file].pretty());
+        squares.forEachRemaining(square -> {
+            if (square.FILE == 0) {
+                sb.append("\n").append(square.RANK + 1).append(" ");
             }
-        }
+            sb.append(square.pretty());
+        });
 
         return sb.toString();
+    }
+
+    protected Iterator<Square> iterator() {
+        return new Iterator<Square>() {
+
+            int rank = 0;
+            int file = 0;
+
+            @Override
+            public boolean hasNext() {
+                return rank < SIZE;
+            }
+
+            @Override
+            public Square next() {
+                Square square = getSquare(rank, file);
+
+                ++file;
+                if (file == SIZE) {
+                    file = 0;
+                    ++rank;
+                }
+
+                return square;
+            }
+        };
     }
 
     @Override
@@ -108,37 +161,58 @@ public class Board {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Board board = (Board) o;
-        return Arrays.equals(squares, board.squares);
+
+        ZippingIterator<Square> iter = IteratorUtils.zippingIterator(
+                iterator(), board.iterator());
+
+        while (iter.hasNext()) {
+            if (iter.next().getColor() != iter.next().getColor()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(squares);
+        Iterator<Square> iter = iterator();
+        int result = 1;
+
+        Color color;
+        while (iter.hasNext()) {
+            color = iter.next().getColor();
+            result = 31 * result + (color == null ? 0 : Objects.hashCode(color));
+        }
+        return result;
     }
 
     class Square {
 
         public final int RANK, FILE;
-        private Optional<Color> color;
+        private Color color;
 
         private Square nw, n, ne, e, se, s, sw, w;
 
         public Square(int rank, int file) {
             this.RANK = rank;
             this.FILE = file;
-            this.color = Optional.empty();
+            this.color = null;
         }
 
         private void setColor(Color color) {
-            this.color = Optional.of(color);
+            this.color = color;
+        }
+
+        public Color getColor() {
+            return color;
         }
 
         private void flip() {
-            color.ifPresent(c -> setColor(c.opposite()));
+            setColor(color.opposite());
         }
 
         public boolean isOccupied() {
-            return color.isPresent();
+            return Objects.nonNull(color);
         }
 
         public Square getNW() {
@@ -198,7 +272,19 @@ public class Board {
         }
 
         public String pretty() {
-            return color.map(c -> c == Color.WHITE ? "\u25cb" : "\u25cf").orElse(" ");
+            if (color == Color.WHITE) {
+                return "\u25cb";
+            }
+            else if (color == Color.BLACK) {
+                return "\u25cf";
+            }
+            else {
+                return " ";
+            }
+        }
+
+        public String algebraicNotation() {
+            return String.format("%s%s", 'a' + FILE, '1' + RANK);
         }
 
         @Override
