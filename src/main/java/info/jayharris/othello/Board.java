@@ -1,7 +1,6 @@
 package info.jayharris.othello;
 
 import info.jayharris.othello.Othello.Color;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -122,7 +121,6 @@ public class Board {
         public final int RANK, FILE;
         private Optional<Color> color;
 
-        @Nullable
         private Square nw, n, ne, e, se, s, sw, w;
 
         public Square(int rank, int file) {
