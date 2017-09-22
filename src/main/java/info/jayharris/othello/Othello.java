@@ -32,6 +32,14 @@ public class Othello {
     }
 
     private Player nextPlayer() {
+        Player next = (current == black ? white : black);
+
+        if (board.hasMoveFor(next)) {
+            return next;
+        }
+        if (board.hasMoveFor(current)) {
+            return current;
+        }
         return null;
     }
 }

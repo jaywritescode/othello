@@ -6,6 +6,7 @@ import org.apache.commons.collections4.iterators.ZippingIterator;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Board {
 
@@ -13,6 +14,7 @@ public class Board {
 
     private final Square[][] squares;
     private final Set<Square> occupied;
+    private final Set<Square> frontier;
 
     private Board() {
         squares = new Square[SIZE][SIZE];
@@ -23,6 +25,7 @@ public class Board {
         }
 
         occupied = new HashSet<>();
+        frontier = new HashSet<>();
     }
 
     /**
@@ -33,33 +36,43 @@ public class Board {
      * @return true iff the disc was successfully put on the square
      */
     public boolean setPiece(Square square, Color color) {
-        if (square.isOccupied()) {
-            return false;
-        }
-
-        if (flipInAllDirections(square, color)) {
-            square.setColor(color);
-            return true;
-        }
+//        if (square.isOccupied()) {
+//            return false;
+//        }
+//
+//        if (flipInAllDirections(square, color)) {
+//            square.setColor(color);
+//            return true;
+//        }
         return false;
     }
 
     private boolean flipInAllDirections(Square square, Color color) {
-        return EnumSet.allOf(Direction.class).stream()
-                       .map(dir -> flipInDirection(square, color, dir))
-                       .reduce(false, Boolean::logicalOr);
+//        return EnumSet.allOf(Direction.class).stream()
+//                       .map(dir -> flipInDirection(square, color, dir))
+//                       .reduce(false, Boolean::logicalOr);
+        return false;
     }
 
     private boolean flipInDirection(Square square, Color color, Direction direction) {
-        boolean success = false;
-        DirectionalIterator iter = DirectionalIterator.INSTANCE.reset(square, direction);
+//        boolean success = false;
+//        DirectionalIterator iter = DirectionalIterator.INSTANCE.reset(square, direction);
+//
+//        while (iter.hasNext() && (square = iter.next()).color == color.opposite()) {
+//            square.flip();
+//            success = true;
+//        }
+//
+//        return success;
+        return false;
+    }
 
-        while (iter.hasNext() && (square = iter.next()).color == color.opposite()) {
-            square.flip();
-            success = true;
-        }
+    public boolean hasMoveFor(Player player) {
+        return hasMoveFor(player.color);
+    }
 
-        return success;
+    private boolean hasMoveFor(Color color) {
+        return frontier.stream().anyMatch(square -> square.isLegalMove(color));
     }
 
     protected Square getSquare(int rank, int file) {
@@ -110,6 +123,12 @@ public class Board {
 
         board.occupied.addAll(Arrays.asList(
                 board.squares[n][w], board.squares[n][e], board.squares[s][w], board.squares[s][e]));
+
+        board.frontier.addAll(
+                board.occupied.stream()
+                        .flatMap(square -> square.getNeighbors().stream())
+                        .filter(Square::isOccupied)
+                        .collect(Collectors.toSet()));
 
         return board;
     }
@@ -204,6 +223,7 @@ public class Board {
         private Color color;
 
         private Square nw, n, ne, e, se, s, sw, w;
+        private Set<Square> neighbors;
 
         /**
          * Constructor.
@@ -235,7 +255,7 @@ public class Board {
         }
 
         /**
-         * Get whether this square is currently occupied.
+         * Determine if this square is currently occupied.
          *
          * @return true iff this square is occupied
          */
@@ -243,56 +263,105 @@ public class Board {
             return Objects.nonNull(color);
         }
 
-        public Square getNW() {
+        /**
+         * Get this square's non-null neighboring squares.
+         *
+         * @return a set of neighboring squares
+         */
+        public Set<Square> getNeighbors() {
+            if (neighbors == null) {
+                neighbors = EnumSet.allOf(Direction.class).stream()
+                                    .map(direction -> direction.go(this))
+                                    .filter(Objects::nonNull)
+                                    .collect(Collectors.toSet());
+            }
+            return neighbors;
+        }
+
+        /**
+         * Determine if it's legal to play a {@code color} disc on this square.
+         *
+         * @param color the color
+         * @return true iff this square is a legal play for {@code color}
+         */
+        public boolean isLegalMove(Color color) {
+            if (isOccupied()) {
+                return false;
+            }
+
+            return EnumSet.allOf(Direction.class).stream()
+                           .anyMatch(direction -> willFlipLine(color, direction));
+        }
+
+        private boolean willFlipLine(Color color, Direction direction) {
+            Square neighbor = direction.fn.apply(this);
+            if (neighbor == null || neighbor.getColor() == null || neighbor.getColor() == color) {
+                return false;
+            }
+
+            DirectionalIterator iter = DirectionalIterator.INSTANCE.reset(neighbor, direction);
+            while (iter.hasNext()) {
+                neighbor = iter.next();
+                if (neighbor.getColor() == null) {
+                    return false;
+                }
+                if (neighbor.getColor() == color) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        Square getNW() {
             if (nw == null) {
                 nw = (RANK - 1 >= 0 && FILE - 1 >= 0 ? squares[RANK - 1][FILE - 1] : null);
             }
             return nw;
         }
 
-        public Square getN() {
+        Square getN() {
             if (n == null) {
                 n = (RANK - 1 >= 0 ? squares[RANK - 1][FILE] : null);
             }
             return n;
         }
 
-        public Square getNE() {
+        Square getNE() {
             if (ne == null) {
                 ne = (RANK - 1 >= 0 && FILE + 1 < SIZE ? squares[RANK - 1][FILE + 1] : null);
             }
             return ne;
         }
 
-        public Square getE() {
+        Square getE() {
             if (e == null) {
                 e = (FILE + 1 < SIZE ? squares[RANK][FILE + 1] : null);
             }
             return e;
         }
 
-        public Square getSE() {
+        Square getSE() {
             if (se == null) {
                 se = (RANK + 1 < SIZE && FILE + 1 < SIZE ? squares[RANK + 1][FILE + 1] : null);
             }
             return se;
         }
 
-        public Square getS() {
+        Square getS() {
             if (s == null) {
                 s = (RANK + 1 < SIZE ? squares[RANK + 1][FILE] : null);
             }
             return s;
         }
 
-        public Square getSW() {
+        Square getSW() {
             if (sw == null) {
                 sw = (RANK + 1 < SIZE && FILE - 1 >= 0 ? squares[RANK + 1][FILE - 1] : null);
             }
             return sw;
         }
 
-        public Square getW() {
+        Square getW() {
             if (w == null) {
                 w = (FILE - 1 >= 0 ? squares[RANK][FILE - 1] : null);
             }
@@ -373,7 +442,7 @@ public class Board {
 
         @Override
         public Square next() {
-            return direction.go(current);
+            return this.current = direction.go(current);
         }
     }
 
