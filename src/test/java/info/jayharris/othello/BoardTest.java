@@ -12,6 +12,8 @@ import java.util.stream.Stream;
 
 import static info.jayharris.othello.BoardAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class BoardTest {
@@ -61,7 +63,40 @@ public class BoardTest {
     @Test
     @DisplayName("should tell if the player has any legal moves")
     void testHasMoveFor() throws Exception {
+        Player white = mock(Player.class);
+        when(white.getColor()).thenReturn(Color.WHITE);
 
+        Player black = mock(Player.class);
+        when(black.getColor()).thenReturn(Color.BLACK);
+
+        Board board;
+        board = BoardFactory.instance().fromString(
+                "wwwwwwww" +
+                "wwwwwwww" +
+                "wwwwwwww" +
+                "wwwwwww " +
+                "wwwwww  " +
+                "wwwwww b" +
+                "wwwwwww " +
+                "wwwwwwww"
+        );
+
+        assertFalse(board.hasMoveFor(white));
+        assertFalse(board.hasMoveFor(black));
+
+        board = BoardFactory.instance().fromString(
+                "   www  " +
+                "  bwwb b" +
+                "wbwwwwbb" +
+                "wwwwbwbb" +
+                "wwwbwwbb" +
+                "wwwwwbbb" +
+                "  bbbbbb" +
+                " bbbbbbb"
+        );
+
+        assertTrue(board.hasMoveFor(white));
+        assertTrue(board.hasMoveFor(black));
     }
 
     @Test

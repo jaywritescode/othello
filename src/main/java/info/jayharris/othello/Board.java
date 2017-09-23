@@ -68,7 +68,7 @@ public class Board {
     }
 
     public boolean hasMoveFor(Player player) {
-        return hasMoveFor(player.color);
+        return hasMoveFor(player.getColor());
     }
 
     private boolean hasMoveFor(Color color) {

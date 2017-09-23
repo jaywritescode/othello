@@ -10,5 +10,9 @@ public abstract class Player {
         this.color = color;
     }
 
+    public Color getColor() {
+        return color;
+    }
+
     public abstract Board.Square getMove(Othello othello);
 }
