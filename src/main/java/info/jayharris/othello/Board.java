@@ -142,7 +142,7 @@ public class Board {
         final StringBuilder sb = new StringBuilder();
         final Iterator<Square> squares = iterator();
 
-        sb.append("\n  abcdefgh\n");
+        sb.append("\n  abcdefgh");
         squares.forEachRemaining(square -> {
             if (square.FILE == 0) {
                 sb.append("\n").append(square.RANK + 1).append(" ");
