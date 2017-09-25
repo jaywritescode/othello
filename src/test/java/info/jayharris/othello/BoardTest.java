@@ -5,12 +5,13 @@ import info.jayharris.othello.Othello.Color;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Method;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static info.jayharris.othello.BoardAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -18,47 +19,47 @@ import static org.mockito.Mockito.when;
 
 public class BoardTest {
 
-//    @Test
-//    @DisplayName("makes a legal play")
-//    void testLegalPlay() throws Exception {
-//        Board board = Board.init();
-//
-//        Method method = Board.Square.class.getDeclaredMethod("setColor", Color.class);
-//        method.setAccessible(true);
-//
-//        method.invoke(board.getSquare('c', 3), Color.WHITE);
-//        method.invoke(board.getSquare('d', 3), Color.BLACK);
-//        method.invoke(board.getSquare('c', 4), Color.WHITE);
-//        method.invoke(board.getSquare('d', 4), Color.BLACK);
-//        method.invoke(board.getSquare('e', 4), Color.BLACK);
-//        method.invoke(board.getSquare('c', 5), Color.WHITE);
-//        method.invoke(board.getSquare('d', 5), Color.BLACK);
-//        method.invoke(board.getSquare('e', 5), Color.WHITE);
-//        method.invoke(board.getSquare('d', 6), Color.BLACK);
-//
-//        board.setPiece(board.getSquare('e', 3), Color.WHITE);
-//
-//        Board expected = Board.init();
-//
-//        method.invoke(expected.getSquare('c', 3), Color.WHITE);
-//        method.invoke(expected.getSquare('d', 3), Color.WHITE);
-//        method.invoke(expected.getSquare('e', 3), Color.WHITE);
-//        method.invoke(expected.getSquare('c', 4), Color.WHITE);
-//        method.invoke(expected.getSquare('d', 4), Color.WHITE);
-//        method.invoke(expected.getSquare('e', 4), Color.WHITE);
-//        method.invoke(expected.getSquare('c', 5), Color.WHITE);
-//        method.invoke(expected.getSquare('d', 5), Color.BLACK);
-//        method.invoke(expected.getSquare('e', 5), Color.WHITE);
-//        method.invoke(expected.getSquare('d', 6), Color.BLACK);
-//
-//        assertThat(board).matches(expected);
-//    }
+    @Test
+    @DisplayName("should update the game board")
+    void testSetPiece() throws Exception {
+        Board board = BoardFactory.instance().fromString(
+                "        " +
+                "   w    " +
+                "  bww   " +
+                "  bwb   " +
+                "  wwbb  " +
+                "  w wb  " +
+                "        " +
+                "        "
+        );
 
-//    @Test
-//    @DisplayName("ignores an illegal play")
-//    void testIllegalMove() throws Exception {
-//
-//    }
+        Set<Square> originalOccupied = board.getOccupied();
+        Set<Square> originalFrontier = board.getFrontier();
+
+        Square move = board.getSquare('e', 2);
+        board.setPiece(move, Color.BLACK);
+
+        assertThat(board).matches(BoardFactory.instance().fromString(
+                "        " +
+                "   wb   " +
+                "  bbb   " +
+                "  bwb   " +
+                "  wwbb  " +
+                "  w wb  " +
+                "        " +
+                "        "
+        ));
+
+        assertThat(board.getOccupied()).isEqualTo(
+                Stream.concat(originalOccupied.stream(), Stream.of(move))
+                        .collect(Collectors.toSet()));
+
+        assertThat(board.getFrontier()).isEqualTo(
+                Stream.concat(originalFrontier.stream(), move.getNeighbors().stream()
+                                                                 .filter(sq -> !sq.isOccupied()))
+                        .filter(Predicate.isEqual(move).negate())
+                        .collect(Collectors.toSet()));
+    }
 
     @Test
     @DisplayName("should tell if the player has any legal moves")
@@ -130,8 +131,6 @@ public class BoardTest {
                 "        " +
                 "        "
         );
-
-        System.out.println(board.pretty());
 
         // square is occupied
         assertFalse(board.getSquare('a', 2).isLegalMove(Color.BLACK));

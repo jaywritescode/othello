@@ -24,9 +24,9 @@ public class Othello {
     public Player nextPly() {
         Board.Square move;
 
-        do {
-            move = current.getMove(this);
-        } while (!board.setPiece(move, current.color));
+//        do {
+//            move = current.getMove(this);
+//        } while (!board.setPiece(move, current.color));
 
         return nextPlayer();
     }
