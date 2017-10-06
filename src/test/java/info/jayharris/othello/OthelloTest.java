@@ -89,13 +89,13 @@ class OthelloTest {
     @DisplayName("next player")
     class NextPlayer {
 
+        Othello othello;
+        Board board;
+        Player black, white;
+
         @Test
         @DisplayName("other player has legal move")
         void testOtherPlayerHasLegalMove() throws Exception {
-            Othello othello;
-            Board board;
-            Player black, white;
-
             board = BoardFactory.instance().fromString(
                     "        " +
                     "        " +
@@ -131,10 +131,6 @@ class OthelloTest {
         @Test
         @DisplayName("other player has no legal move")
         void testOtherPlayerHasNoLegalMove() throws Exception {
-            Othello othello;
-            Board board;
-            Player black, white;
-
             board = BoardFactory.instance().fromString(
                     "        " +
                     "        " +
@@ -170,10 +166,6 @@ class OthelloTest {
         @Test
         @DisplayName("neither player has a legal move")
         void testGameOver() throws Exception {
-            Othello othello;
-            Board board;
-            Player black, white;
-
             board = BoardFactory.instance().fromString(
                     "wwwwwwww" +
                     "wwwwwwwb" +
