@@ -88,19 +88,6 @@ public class Board {
     }
 
     /**
-     * Get the square given its algebraic notation
-     *
-     * @param s the algebraic notation
-     * @return the square
-     */
-    public Square getSquare(String s) {
-        char file = s.charAt(0);
-        int rank = s.charAt(1) - '1';
-
-        return getSquare(file, rank);
-    }
-
-    /**
      *
      * @return an unmodifiable view of the set of occupied squares
      */
@@ -484,11 +471,11 @@ public class Board {
 
         System.out.println(board.pretty());
 
-        board.setPiece(board.getSquare("c4"), Color.BLACK);
+        board.setPiece(board.getSquare('c', 4), Color.BLACK);
 
         System.out.println(board.pretty());
 
-        board.setPiece(board.getSquare("e3"), Color.WHITE);
+        board.setPiece(board.getSquare('e', 3), Color.WHITE);
 
         System.out.println(board.pretty());
     }

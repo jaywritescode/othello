@@ -24,9 +24,11 @@ public class Othello {
     public Player nextPly() {
         Board.Square move;
 
-//        do {
-//            move = current.getMove(this);
-//        } while (!board.setPiece(move, current.color));
+        do {
+            move = current.getMove(this);
+        } while (!move.isLegalMove(current.getColor()));
+
+        board.setPiece(move, current.getColor());
 
         return nextPlayer();
     }
@@ -41,5 +43,9 @@ public class Othello {
             return current;
         }
         return null;
+    }
+
+    public Board getBoard() {
+        return board;
     }
 }
