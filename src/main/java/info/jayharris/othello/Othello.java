@@ -1,5 +1,8 @@
 package info.jayharris.othello;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public class Othello {
 
     public enum Color {
@@ -43,6 +46,12 @@ public class Othello {
             return current;
         }
         return null;
+    }
+
+    public Outcome gameOver() {
+        Map<Color, Long> scores = board.getOccupied().stream()
+                .collect(Collectors.groupingBy(Board.Square::getColor, Collectors.counting()));
+        return Outcome.whoWon(scores.get(Color.BLACK), scores.get(Color.WHITE));
     }
 
     public Board getBoard() {

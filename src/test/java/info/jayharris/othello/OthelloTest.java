@@ -2,6 +2,7 @@ package info.jayharris.othello;
 
 import info.jayharris.othello.Board.Square;
 import info.jayharris.othello.Othello.Color;
+import info.jayharris.othello.Outcome.Winner;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -196,6 +197,62 @@ class OthelloTest {
             currentField.set(othello, white);
 
             Assertions.assertThat(othello.nextPly()).isNull();
+        }
+    }
+
+    @Nested
+    @DisplayName("game over")
+    class GameOver {
+
+        Board board;
+        Othello othello;
+
+        @Test
+        @DisplayName("black wins")
+        void testWinner() throws Exception {
+            board = BoardFactory.instance().fromString(
+                    "wbwwwwww" +
+                    "wbbbbwwb" +
+                    "wbwbwwwb" +
+                    "wbbwbbwb" +
+                    "wbwwwbwb" +
+                    "wbwwbbbb" +
+                    "wbwwbbbb" +
+                    "bbbbbbbb"
+            );
+
+            othello = new Othello(null, null);
+
+            boardField.set(othello, board);
+
+            Outcome actual = othello.gameOver();
+            Assertions.assertThat(actual.getWinner()).isEqualTo(Winner.BLACK);
+            Assertions.assertThat(actual.getWinnerScore()).isEqualTo(35);
+            Assertions.assertThat(actual.getLoserScore()).isEqualTo(29);
+        }
+
+        @Test
+        @DisplayName("it's a tie")
+        void testTie() throws Exception {
+            board = BoardFactory.instance().fromString(
+                    "wwwwwwwb" +
+                    "bbbwwwwb" +
+                    "wbwwwbwb" +
+                    "wbwwbbwb" +
+                    "wbwbwwwb" +
+                    "wwbbbwbb" +
+                    "wwwbbbwb" +
+                    "bbbbbbbb"
+            );
+
+            othello = new Othello(null, null);
+
+            boardField.set(othello, board);
+
+            Outcome actual = othello.gameOver();
+            Assertions.assertThat(actual.getWinner()).isEqualTo(Winner.TIE);
+            Assertions.assertThat(actual.getWinnerScore()).isEqualTo(32);
+            Assertions.assertThat(actual.getLoserScore()).isEqualTo(32);
         }
     }
 }
