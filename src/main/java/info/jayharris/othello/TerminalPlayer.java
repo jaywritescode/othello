@@ -20,6 +20,8 @@ public class TerminalPlayer extends Player {
 
     @Override
     public Square getMove(Othello othello) {
+        System.out.println(othello.getBoard().pretty());
+
         String line;
         try {
             if (pattern.matcher(line = reader.readLine()).matches()) {

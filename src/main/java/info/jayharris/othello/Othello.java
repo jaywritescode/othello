@@ -1,7 +1,11 @@
 package info.jayharris.othello;
 
+import info.jayharris.othello.Outcome.Winner;
+
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static info.jayharris.othello.Outcome.Winner.*;
 
 public class Othello {
 
@@ -22,6 +26,11 @@ public class Othello {
 
         this.black = this.current = black;
         this.white = white;
+    }
+
+    public Outcome play() {
+        while (nextPly() != null);
+        return gameOver();
     }
 
     public Player nextPly() {
@@ -56,5 +65,24 @@ public class Othello {
 
     public Board getBoard() {
         return board;
+    }
+
+    public static void main(String... args) {
+        Othello othello = new Othello(new TerminalPlayer(Color.BLACK), new TerminalPlayer(Color.WHITE));
+        Outcome outcome = othello.play();
+
+        switch (outcome.getWinner()) {
+            case BLACK:
+                System.out.println("black wins");
+                break;
+            case WHITE:
+                System.out.println("white wins");
+                break;
+            case TIE:
+            default:
+                System.out.println("it's a tie");
+                break;
+        }
+        System.out.println(String.format("the score is %s to %s", outcome.getWinnerScore(), outcome.getLoserScore()));
     }
 }
