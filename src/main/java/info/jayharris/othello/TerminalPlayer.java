@@ -21,6 +21,7 @@ public class TerminalPlayer extends Player {
     @Override
     public Square getMove(Othello othello) {
         System.out.println(othello.getBoard().pretty());
+        System.out.print(String.format("%s to move: ", getColor()));
 
         String line;
         try {
