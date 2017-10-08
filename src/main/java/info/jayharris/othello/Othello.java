@@ -1,11 +1,7 @@
 package info.jayharris.othello;
 
-import info.jayharris.othello.Outcome.Winner;
-
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static info.jayharris.othello.Outcome.Winner.*;
 
 public class Othello {
 
@@ -19,21 +15,22 @@ public class Othello {
 
     private final Board board;
     private final Player black, white;
-    private Player current;
 
     public Othello(Player black, Player white) {
         this.board = Board.init();
 
-        this.black = this.current = black;
+        this.black = black;
         this.white = white;
     }
 
     public Outcome play() {
-        while (nextPly() != null);
+        Player current = black;
+
+        while ((current = nextPly(current)) != null);
         return gameOver();
     }
 
-    public Player nextPly() {
+    public Player nextPly(Player current) {
         Board.Square move;
 
         do {
@@ -42,10 +39,10 @@ public class Othello {
 
         board.setPiece(move, current.getColor());
 
-        return nextPlayer();
+        return nextPlayer(current);
     }
 
-    private Player nextPlayer() {
+    private Player nextPlayer(Player current) {
         Player next = (current == black ? white : black);
 
         if (board.hasMoveFor(next)) {

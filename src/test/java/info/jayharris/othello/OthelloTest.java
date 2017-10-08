@@ -19,15 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 class OthelloTest {
 
-    static Field boardField;
-    static Field currentField;
+    private static Field boardField;
 
     @BeforeAll
     static void init() throws Exception {
         boardField = Othello.class.getDeclaredField("board");
-        currentField = Othello.class.getDeclaredField("current");
-
-        Stream.of(boardField, currentField).forEach(field -> field.setAccessible(true));
+        boardField.setAccessible(true);
     }
 
     @Test
@@ -48,7 +45,7 @@ class OthelloTest {
 
         Othello othello = new Othello(black, white);
 
-        assertSame(white, othello.nextPly());
+        assertSame(white, othello.nextPly(black));
         assertThat(othello.getBoard()).matches(BoardFactory.instance().fromString(
                 "        " +
                 "        " +
@@ -82,7 +79,7 @@ class OthelloTest {
         Othello othello = new Othello(black, white);
         movesBuilder.add(othello.getBoard().getSquare('c', 5));
 
-        assertThatIllegalStateException().isThrownBy(othello::nextPly);
+        assertThatIllegalStateException().isThrownBy(() -> othello.nextPly(black));
         assertThat(othello.getBoard()).matches(BoardFactory.instance().newGame());
     }
 
@@ -124,9 +121,7 @@ class OthelloTest {
             othello = new Othello(black, white);
 
             boardField.set(othello, board);
-            currentField.set(othello, white);
-
-            Assertions.assertThat(othello.nextPly()).isEqualTo(black);
+            Assertions.assertThat(othello.nextPly(white)).isEqualTo(black);
         }
 
         @Test
@@ -159,9 +154,7 @@ class OthelloTest {
             othello = new Othello(black, white);
 
             boardField.set(othello, board);
-            currentField.set(othello, black);
-
-            Assertions.assertThat(othello.nextPly()).isEqualTo(black);
+            Assertions.assertThat(othello.nextPly(black)).isEqualTo(black);
         }
 
         @Test
@@ -194,9 +187,7 @@ class OthelloTest {
             othello = new Othello(black, white);
 
             boardField.set(othello, board);
-            currentField.set(othello, white);
-
-            Assertions.assertThat(othello.nextPly()).isNull();
+            Assertions.assertThat(othello.nextPly(white)).isNull();
         }
     }
 
