@@ -3,6 +3,7 @@ package info.jayharris.othello;
 import info.jayharris.othello.Board.Square;
 import info.jayharris.othello.Othello.Color;
 import info.jayharris.othello.Outcome.Winner;
+import org.apache.commons.collections4.IteratorUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.util.Iterator;
 import java.util.stream.Stream;
 
 import static info.jayharris.othello.BoardAssert.assertThat;
@@ -245,5 +247,44 @@ class OthelloTest {
             Assertions.assertThat(actual.getWinnerScore()).isEqualTo(32);
             Assertions.assertThat(actual.getLoserScore()).isEqualTo(32);
         }
+    }
+
+    @Test
+    @DisplayName("run the entire game")
+    void endToEndTest() {
+        Iterator<Character> moves = IteratorUtils.arrayIterator(new StringBuilder()
+                .append("d3c5f6f5e6e3c3f3c4b4b5c2a3b3d2c1e1d7e7a4a5d6c6a6a7b6d8b2c7f8")
+                .append("f2g5e8f7g3d1f4e2f1h3g2c8g6h5h4g4h2b7a8h1b8g7b1a1a2g1g8h8h7h6")
+                .toString()
+                .toCharArray());
+
+        Player black = new Player(Color.BLACK) {
+            @Override
+            public Square getMove(Othello othello) {
+                char file = moves.next();
+                int rank = moves.next() - '1' + 1;
+
+                return othello.getBoard().getSquare(file, rank);
+            }
+        };
+
+        Player white = new Player(Color.WHITE) {
+            @Override
+            public Square getMove(Othello othello) {
+                char file = moves.next();
+                int rank = moves.next() - '1' + 1;
+
+                return othello.getBoard().getSquare(file, rank);
+            }
+        };
+
+        Othello othello = new Othello(black, white);
+
+        Outcome outcome = othello.play();
+        System.out.println(othello.getBoard().pretty());
+
+        Assertions.assertThat(outcome.getWinner()).isEqualTo(Winner.BLACK);
+        Assertions.assertThat(outcome.getWinnerScore()).isEqualTo(35);
+        Assertions.assertThat(outcome.getLoserScore()).isEqualTo(29);
     }
 }
