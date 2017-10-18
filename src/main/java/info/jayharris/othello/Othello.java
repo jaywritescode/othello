@@ -65,7 +65,7 @@ public class Othello {
     }
 
     public static void main(String... args) {
-        Othello othello = new Othello(new TerminalPlayer(Color.BLACK), new TerminalPlayer(Color.WHITE));
+        Othello othello = new Othello(new TerminalPlayer(Color.BLACK), new RandomMovePlayer(Color.WHITE));
         Outcome outcome = othello.play();
 
         switch (outcome.getWinner()) {
