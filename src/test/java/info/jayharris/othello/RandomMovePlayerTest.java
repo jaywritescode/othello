@@ -2,7 +2,6 @@ package info.jayharris.othello;
 
 import info.jayharris.othello.Board.Square;
 import info.jayharris.othello.Othello.Color;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +11,8 @@ import java.lang.reflect.Field;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class RandomMovePlayerTest {
 
@@ -34,7 +35,7 @@ class RandomMovePlayerTest {
 
     @Test
     @DisplayName("always gets a legal square")
-    void getMove() throws Exception {
+    void testGetMove() throws Exception {
         Board board = BoardFactory.instance().fromString(
                 "        " +
                 "   w    " +
@@ -61,7 +62,7 @@ class RandomMovePlayerTest {
         ).collect(Collectors.toSet());
 
         for (int i = 0; i < 20; ++i) {
-            Assertions.assertThat(player.getMove(othello)).isIn(legalSquares);
+            assertThat(player.getMove(othello)).isIn(legalSquares);
         }
     }
 }

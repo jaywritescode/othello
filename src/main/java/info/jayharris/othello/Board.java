@@ -1,5 +1,7 @@
 package info.jayharris.othello;
 
+import info.jayharris.othello.BoardUtils.Direction;
+import info.jayharris.othello.BoardUtils.DirectionalIterator;
 import info.jayharris.othello.Othello.Color;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.iterators.ZippingIterator;
@@ -7,7 +9,6 @@ import org.apache.commons.lang3.Validate;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Board {
@@ -56,7 +57,7 @@ public class Board {
 
     private void flipInDirection(Square square, Color color, Direction direction) {
         if (square.willFlipLine(color, direction)) {
-            DirectionalIterator iter = Board.directionalIterator(square, direction);
+            DirectionalIterator iter = BoardUtils.directionalIterator(square, direction);
             Square next = iter.next();
             do {
                 next.flip();
@@ -227,11 +228,11 @@ public class Board {
 
     class Square {
 
-        public final int RANK, FILE;
-        private Color color;
+        final int RANK, FILE;
+        Color color;
 
-        private Square nw, n, ne, e, se, s, sw, w;
-        private Set<Square> neighbors;
+        Square nw, n, ne, e, se, s, sw, w;
+        Set<Square> neighbors;
 
         /**
          * Constructor.
@@ -239,13 +240,13 @@ public class Board {
          * @param rank the square's rank. The top row of the board is rank 0.
          * @param file the square's file. The left column of the board is file 0.
          */
-        public Square(int rank, int file) {
+        private Square(int rank, int file) {
             this.RANK = rank;
             this.FILE = file;
             this.color = null;
         }
 
-        private void setColor(Color color) {
+        void setColor(Color color) {
             this.color = color;
         }
 
@@ -254,11 +255,11 @@ public class Board {
          *
          * @return the square's color
          */
-        public Color getColor() {
+        Color getColor() {
             return color;
         }
 
-        private void flip() {
+        void flip() {
             setColor(color.opposite());
         }
 
@@ -267,7 +268,7 @@ public class Board {
          *
          * @return true iff this square is occupied
          */
-        public boolean isOccupied() {
+        boolean isOccupied() {
             return Objects.nonNull(color);
         }
 
@@ -276,7 +277,7 @@ public class Board {
          *
          * @return a set of neighboring squares
          */
-        public Set<Square> getNeighbors() {
+        Set<Square> getNeighbors() {
             if (neighbors == null) {
                 neighbors = EnumSet.allOf(Direction.class).stream()
                                     .map(direction -> direction.go(this))
@@ -292,19 +293,27 @@ public class Board {
          * @param color the color
          * @return true iff this square is a legal play for {@code color}
          */
-        public boolean isLegalMove(Color color) {
+        boolean isLegalMove(Color color) {
             return !isOccupied() && EnumSet.allOf(Direction.class).stream()
                                             .anyMatch(direction -> willFlipLine(color, direction));
 
         }
 
-        private boolean willFlipLine(Color color, Direction direction) {
-            Square neighbor = direction.fn.apply(this);
+        /**
+         * Determine if {@code color} playing on this square will flips discs in {@code direction}
+         *
+         * @param color
+         * @param direction
+         * @return true iff {@code color} playing on this square will flip {@code color.opposite()}
+         *  discs in the given direction
+         */
+        boolean willFlipLine(Color color, Direction direction) {
+            Square neighbor = direction.go(this);
             if (neighbor == null || neighbor.getColor() == null || neighbor.getColor() == color) {
                 return false;
             }
 
-            DirectionalIterator iter = Board.directionalIterator(neighbor, direction);
+            DirectionalIterator iter = BoardUtils.directionalIterator(neighbor, direction);
             while (iter.hasNext()) {
                 neighbor = iter.next();
                 if (neighbor.getColor() == null) {
@@ -421,56 +430,6 @@ public class Board {
         @Override
         public int hashCode() {
             return Objects.hash(RANK, FILE);
-        }
-    }
-
-    /**
-     * An iterator that traverses the board in a given direction and stops
-     * when it passes the edge of the board.
-     */
-    private static class DirectionalIterator implements Iterator<Square> {
-
-        Square current;
-        final Direction direction;
-
-        DirectionalIterator(Square start, Direction direction) {
-            this.current = start;
-            this.direction = direction;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return Objects.nonNull(direction.go(current));
-        }
-
-        @Override
-        public Square next() {
-            return this.current = direction.go(current);
-        }
-    }
-
-    protected static DirectionalIterator directionalIterator(Square start, Direction direction) {
-        return new DirectionalIterator(start, direction);
-    }
-
-    enum Direction {
-        NW(Square::getNW),
-        N(Square::getN),
-        NE(Square::getNE),
-        E(Square::getE),
-        SE(Square::getSE),
-        S(Square::getS),
-        SW(Square::getSW),
-        W(Square::getW);
-
-        private final Function<Square, Square> fn;
-
-        Direction(Function<Square, Square> fn) {
-            this.fn = fn;
-        }
-
-        Square go(Square from) {
-            return fn.apply(from);
         }
     }
 

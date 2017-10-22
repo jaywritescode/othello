@@ -40,14 +40,14 @@ class TerminalPlayerTest {
 
     @Test
     @DisplayName("gets the correct square")
-    void getMove() throws Exception {
+    void testGetMove() throws Exception {
         when(mockReader.readLine()).thenReturn("e6");
         assertThat(player.getMove(othello)).isSameAs(othello.getBoard().getSquare('e', 6));
     }
 
     @Test
     @DisplayName("given invalid algebraic notation")
-    void getMoveInvalid() throws Exception {
+    void testGetMoveInvalid() throws Exception {
         when(mockReader.readLine()).thenReturn("m9");
         assertThat(player.getMove(othello)).isNull();
     }
