@@ -41,7 +41,6 @@ public class BoardFactory {
         Board board = Board.init();
 
         final Set<Square> occupied = (Set<Square>) occupiedField.get(board);
-        final Set<Square> potentialMoves = (Set<Square>) potentialMovesField.get(board);
 
         Square square;
         int rank = 0, file = 0;
@@ -61,9 +60,9 @@ public class BoardFactory {
         }
 
         potentialMovesField.set(board, occupied.stream()
-                                         .flatMap(sq -> sq.getNeighbors().stream())
-                                         .filter(it -> !it.isOccupied())
-                                         .collect(Collectors.toSet()));
+                .flatMap(sq -> sq.getNeighbors().stream())
+                .filter(it -> !it.isOccupied())
+                .collect(Collectors.toSet()));
         return board;
     }
 }
