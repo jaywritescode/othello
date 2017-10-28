@@ -6,17 +6,14 @@ import info.jayharris.othello.Othello.Color;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class BoardFactory {
 
     private static BoardFactory factory;
 
     private static Method setColorMethod;
-    private static Field occupiedField, frontierField;
+    private static Field occupiedField, potentialMovesField;
 
     private BoardFactory() throws Exception {
         setColorMethod = Square.class.getDeclaredMethod("setColor", Color.class);
@@ -25,8 +22,8 @@ public class BoardFactory {
         occupiedField = Board.class.getDeclaredField("occupied");
         occupiedField.setAccessible(true);
 
-        frontierField = Board.class.getDeclaredField("frontier");
-        frontierField.setAccessible(true);
+        potentialMovesField = Board.class.getDeclaredField("potentialMoves");
+        potentialMovesField.setAccessible(true);
     }
 
     protected static BoardFactory instance() throws Exception {
@@ -44,7 +41,7 @@ public class BoardFactory {
         Board board = Board.init();
 
         final Set<Square> occupied = (Set<Square>) occupiedField.get(board);
-        final Set<Square> frontier = (Set<Square>) frontierField.get(board);
+        final Set<Square> potentialMoves = (Set<Square>) potentialMovesField.get(board);
 
         Square square;
         int rank = 0, file = 0;
@@ -63,9 +60,9 @@ public class BoardFactory {
             }
         }
 
-        frontierField.set(board, occupied.stream()
+        potentialMovesField.set(board, occupied.stream()
                                          .flatMap(sq -> sq.getNeighbors().stream())
-                                         .filter(sq -> !sq.isOccupied())
+                                         .filter(it -> !it.isOccupied())
                                          .collect(Collectors.toSet()));
         return board;
     }

@@ -2,7 +2,10 @@ package info.jayharris.othello;
 
 import info.jayharris.othello.Board.Square;
 import info.jayharris.othello.Othello.Color;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -20,45 +23,100 @@ import static org.mockito.Mockito.when;
 public class BoardTest {
 
     @Test
-    @DisplayName("should update the game board")
-    void testSetPiece() throws Exception {
-        Board board = BoardFactory.instance().fromString(
-                "        " +
-                "   w    " +
-                "  bww   " +
-                "  bwb   " +
-                "  wwbb  " +
-                "  w wb  " +
-                "        " +
-                "        "
+    @DisplayName("initializes the board")
+    void testInit() throws Exception {
+        Board board = Board.init();
+
+        assertThat(board).matches(BoardFactory.instance().newGame());
+        Assertions.assertThat(board.getOccupied()).containsOnly(
+                board.getSquare('d', 4),
+                board.getSquare('d', 5),
+                board.getSquare('e', 4),
+                board.getSquare('e', 5)
         );
+        Assertions.assertThat(board.getPotentialMoves()).containsOnly(
+                board.getSquare('c', 3),
+                board.getSquare('c', 4),
+                board.getSquare('c', 5),
+                board.getSquare('c', 6),
+                board.getSquare('d', 3),
+                board.getSquare('d', 6),
+                board.getSquare('e', 3),
+                board.getSquare('e', 6),
+                board.getSquare('f', 3),
+                board.getSquare('f', 4),
+                board.getSquare('f', 5),
+                board.getSquare('f', 6)
+        );
+    }
 
-        Set<Square> originalOccupied = board.getOccupied();
-        Set<Square> originalFrontier = board.getFrontier();
+    @Nested
+    @DisplayName("#setPiece")
+    class SetPiece {
 
-        Square move = board.getSquare('e', 2);
-        board.setPiece(move, Color.BLACK);
+        Board board;
 
-        assertThat(board).matches(BoardFactory.instance().fromString(
-                "        " +
-                "   wb   " +
-                "  bbb   " +
-                "  bwb   " +
-                "  wwbb  " +
-                "  w wb  " +
-                "        " +
-                "        "
-        ));
+        @BeforeEach
+        void init() throws Exception {
+            board = BoardFactory.instance().fromString(
+                    "        " +
+                    "   w    " +
+                    "  bww   " +
+                    "  bwb   " +
+                    "  wwbb  " +
+                    "  w wb  " +
+                    "        " +
+                    "        "
+            );
+        }
 
-        assertThat(board.getOccupied()).isEqualTo(
-                Stream.concat(originalOccupied.stream(), Stream.of(move))
-                        .collect(Collectors.toSet()));
+        @Test
+        @DisplayName("should update the game board")
+        void testUpdatesGameBoard() throws Exception {
+            Square move = board.getSquare('e', 2);
+            board.setPiece(move, Color.BLACK);
 
-        assertThat(board.getFrontier()).isEqualTo(
-                Stream.concat(originalFrontier.stream(), move.getNeighbors().stream()
-                                                                 .filter(sq -> !sq.isOccupied()))
-                        .filter(Predicate.isEqual(move).negate())
-                        .collect(Collectors.toSet()));
+            assertThat(board).matches(BoardFactory.instance().fromString(
+                    "        " +
+                    "   wb   " +
+                    "  bbb   " +
+                    "  bwb   " +
+                    "  wwbb  " +
+                    "  w wb  " +
+                    "        " +
+                    "        "
+            ));
+        }
+
+        @Test
+        @DisplayName("updates the set of occupied squares")
+        void testUpdatesOccupiedSet() throws Exception {
+            Set<Square> original = board.getOccupied();
+
+            Square move = board.getSquare('e', 2);
+            board.setPiece(move, Color.BLACK);
+
+            Set<Square> actual = board.getOccupied();
+            Set<Square> expected = Stream.concat(original.stream(), Stream.of(move)).collect(Collectors.toSet());
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("updates the set of potential move squares")
+        void testUpdateFrontierSet() throws Exception {
+            Set<Square> original = board.getPotentialMoves();
+
+            Square move = board.getSquare('e', 2);
+            board.setPiece(move, Color.BLACK);
+
+            Set<Square> actual = board.getPotentialMoves();
+            Set<Square> expected = Stream.concat(original.stream(), move.getNeighbors().stream())
+                    .filter(it -> !it.isOccupied())
+                    .collect(Collectors.toSet());
+
+            assertThat(actual).isEqualTo(expected);
+        }
     }
 
     @Test
@@ -148,4 +206,61 @@ public class BoardTest {
 
         assertTrue(board.getSquare('a', 6).isLegalMove(Color.BLACK));
     }
+
+//    @Nested
+//    @DisplayName("Board::copy")
+//    class Copy {
+//
+//        @Test
+//        @DisplayName("it returns a new board")
+//        void testCopyReturnsNewBoard() throws Exception {
+//            Board original = BoardFactory.instance().fromString(
+//                    "wbwwww  " +
+//                    " bbbbw b" +
+//                    " bwwwbwb" +
+//                    "bbwwwbww" +
+//                    "wwwbwww " +
+//                    " wwbwwwb" +
+//                    "  wwbwww" +
+//                    "  wwww b"
+//            );
+//
+//            assertThat(Board.copy(original)).isNotSameAs(original);
+//        }
+//
+//        @Test
+//        @DisplayName("the copy's squares have the same colors as the original's squares")
+//        void testCopyIsReallyACopy() throws Exception {
+//            Board original = BoardFactory.instance().fromString(
+//                    "  ww  w " +
+//                    " bwwww  " +
+//                    "wbbbwww " +
+//                    "wbwbb   " +
+//                    "wbwbbb  " +
+//                    "wwwbbb  " +
+//                    "  wb    " +
+//                    "        "
+//            );
+//
+//            Board copy = Board.copy(original);
+//
+//            assertThat(copy).matches(original);
+//        }
+//
+//        @Test
+//        @DisplayName("the copy's squares are new")
+//        void testCopyHasNewSquares() throws Exception {
+//            Board original = Board.init();
+//            Board copy = Board.copy(original);
+//
+//            for (char rank = 1; rank <= 8; ++rank) {
+//                for (char file = 'a'; file <= 'h'; ++file) {
+//                    Square originalSquare = original.getSquare(file, rank);
+//                    Square copySquare = copy.getSquare(file, rank);
+//
+//                    assertThat(copySquare).isNotSameAs(originalSquare);
+//                }
+//            }
+//        }
+//    }
 }

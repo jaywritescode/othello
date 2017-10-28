@@ -16,8 +16,8 @@ public class Board {
     public static final int SIZE = 8;
 
     private final Square[][] squares;
-    private final Set<Square> occupied;
-    private final Set<Square> frontier;
+    private final Set<Square> occupied;             // squares that are currently occupied
+    private final Set<Square> potentialMoves;       // squares that are unoccupied and ajacent to at least one occupied square
 
     private Board() {
         squares = new Square[SIZE][SIZE];
@@ -28,7 +28,7 @@ public class Board {
         }
 
         occupied = new HashSet<>();
-        frontier = new HashSet<>();
+        potentialMoves = new HashSet<>();
     }
 
     /**
@@ -44,10 +44,11 @@ public class Board {
         flipInAllDirections(square, color);
 
         occupied.add(square);
-        frontier.remove(square);
-        frontier.addAll(square.getNeighbors().stream()
-                                .filter(sq -> !sq.isOccupied())
-                                .collect(Collectors.toSet()));
+        potentialMoves.remove(square);
+        potentialMoves.addAll(
+                square.getNeighbors().stream()
+                        .filter(it -> !it.isOccupied())
+                        .collect(Collectors.toSet()));
     }
 
     private void flipInAllDirections(Square square, Color color) {
@@ -70,7 +71,7 @@ public class Board {
     }
 
     private boolean hasMoveFor(Color color) {
-        return frontier.stream().anyMatch(square -> square.isLegalMove(color));
+        return potentialMoves.stream().anyMatch(it -> it.isLegalMove(color));
     }
 
 //    public Set<Square> getLegalMovesFor(Player player) {
@@ -106,10 +107,10 @@ public class Board {
 
     /**
      *
-     * @return an unmodifiable view of the set of frontier squares
+     * @return an unmodifiable view of the set of potential moves
      */
-    public Set<Square> getFrontier() {
-        return Collections.unmodifiableSet(frontier);
+    public Set<Square> getPotentialMoves() {
+        return Collections.unmodifiableSet(potentialMoves);
     }
 
     /**
