@@ -74,14 +74,6 @@ public class Board {
         return potentialMoves.stream().anyMatch(it -> it.isLegalMove(color));
     }
 
-//    public Set<Square> getLegalMovesFor(Player player) {
-//        return getLegalMovesFor(player.getColor());
-//    }
-//
-//    private Set<Square> getLegalMovesFor(Color color) {
-//        return frontier.stream().filter(square -> square.isLegalMove(color)).collect(Collectors.toSet());
-//    }
-
     protected Square getSquare(int rank, int file) {
         return squares[rank][file];
     }
