@@ -134,10 +134,10 @@ public class Board {
         board.occupied.addAll(Arrays.asList(
                 board.squares[n][w], board.squares[n][e], board.squares[s][w], board.squares[s][e]));
 
-        board.frontier.addAll(
+        board.potentialMoves.addAll(
                 board.occupied.stream()
                         .flatMap(square -> square.getNeighbors().stream())
-                        .filter(Square::isOccupied)
+                        .filter(it -> !it.isOccupied())
                         .collect(Collectors.toSet()));
 
         return board;

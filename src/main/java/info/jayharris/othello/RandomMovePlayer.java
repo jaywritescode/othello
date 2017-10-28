@@ -5,6 +5,7 @@ import info.jayharris.othello.Othello.Color;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class RandomMovePlayer extends Player {
@@ -17,7 +18,7 @@ public class RandomMovePlayer extends Player {
 
     @Override
     public Square getMove(Othello othello) {
-        List<Square> moves = othello.getBoard().getLegalMovesFor(this).stream().collect(Collectors.toList());
+        List<Square> moves = getLegalMoves(othello.getBoard()).stream().collect(Collectors.toList());
 
         if (moves.isEmpty()) {
             throw new IllegalStateException();
@@ -25,5 +26,11 @@ public class RandomMovePlayer extends Player {
 
         int i = random.nextInt(moves.size());
         return moves.listIterator(i).next();
+    }
+
+    private Set<Square> getLegalMoves(Board board) {
+        return board.getPotentialMoves().stream()
+                .filter(it -> it.isLegalMove(color))
+                .collect(Collectors.toSet());
     }
 }
