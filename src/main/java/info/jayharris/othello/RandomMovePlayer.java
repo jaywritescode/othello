@@ -27,10 +27,4 @@ public class RandomMovePlayer extends Player {
         int i = random.nextInt(moves.size());
         return moves.listIterator(i).next();
     }
-
-    private Set<Square> getLegalMoves(Board board) {
-        return board.getPotentialMoves().stream()
-                .filter(it -> it.isLegalMove(color))
-                .collect(Collectors.toSet());
-    }
 }

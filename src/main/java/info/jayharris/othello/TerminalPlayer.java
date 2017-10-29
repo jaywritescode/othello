@@ -6,6 +6,7 @@ import info.jayharris.othello.Othello.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class TerminalPlayer extends Player {
@@ -23,13 +24,19 @@ public class TerminalPlayer extends Player {
         System.out.println(othello.getBoard().pretty());
         System.out.print(String.format("%s to move: ", getColor()));
 
-        String line;
+        Square move = null;
+        Set<Square> legalMoves = getLegalMoves(othello.getBoard());
+
         try {
+            String line;
             if (pattern.matcher(line = reader.readLine()).matches()) {
-                return othello.getBoard().getSquare(line.charAt(0), Integer.parseInt(line.substring(1)));
+                move = othello.getBoard().getSquare(line.charAt(0), Integer.parseInt(line.substring(1)));
             }
         }
-        catch (IOException e) { }
-        return null;
-    };
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return legalMoves.contains(move) ? move : null;
+    }
 }

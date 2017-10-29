@@ -23,12 +23,6 @@ public class GreedyPlayer extends Player {
                 .orElseThrow(IllegalStateException::new);
     }
 
-    private Set<Square> getLegalMoves(Board board) {
-        return board.getPotentialMoves().stream()
-                .filter(it -> it.isLegalMove(color))
-                .collect(Collectors.toSet());
-    }
-
     private int discsFlippedByPlaying(Square square) {
         return EnumSet.allOf(Direction.class).stream().collect(
                 Collectors.summingInt(it -> discsFlippedInDirection(square, it)));
