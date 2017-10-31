@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import static info.jayharris.othello.BoardAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -116,6 +117,13 @@ public class BoardTest {
                     .collect(Collectors.toSet());
 
             assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("should fail if given an illegal move")
+        void testFailOnIllegalMove() throws Exception {
+            Square move = board.getSquare('a', 1);
+            assertThatIllegalArgumentException().isThrownBy(() -> board.setPiece(move, Color.BLACK));
         }
     }
 
