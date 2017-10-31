@@ -2,10 +2,7 @@ package info.jayharris.othello;
 
 import info.jayharris.othello.Board.Square;
 import info.jayharris.othello.Othello.Color;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.lang.reflect.Field;
 import java.util.Set;
@@ -34,6 +31,7 @@ class RandomMovePlayerTest {
     }
 
     @Test
+    @RepeatedTest(20)
     @DisplayName("always gets a legal square")
     void testGetMove() throws Exception {
         Board board = BoardFactory.instance().fromString(
@@ -61,8 +59,6 @@ class RandomMovePlayerTest {
                 board.getSquare('g', 4)
         ).collect(Collectors.toSet());
 
-        for (int i = 0; i < 20; ++i) {
-            assertThat(player.getMove(othello)).isIn(legalSquares);
-        }
+        assertThat(player.getMove(othello)).isIn(legalSquares);
     }
 }
