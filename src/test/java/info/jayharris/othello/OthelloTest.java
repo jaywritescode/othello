@@ -12,10 +12,9 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.Iterator;
-import java.util.stream.Stream;
 
 import static info.jayharris.othello.BoardAssert.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 
@@ -63,12 +62,10 @@ class OthelloTest {
     @Test
     @DisplayName("should not play an illegal move")
     void nextPlyIllegalMove() throws Exception {
-        Stream.Builder<Square> movesBuilder = Stream.builder();
-
         Player black = new Player(Color.BLACK) {
             @Override
             public Square getMove(Othello othello) {
-                return movesBuilder.build().findFirst().orElseThrow(IllegalStateException::new);
+                return othello.getBoard().getSquare('a', 1);
             }
         };
         Player white = new Player(Color.WHITE) {
@@ -79,10 +76,8 @@ class OthelloTest {
         };
 
         Othello othello = new Othello(black, white);
-        movesBuilder.add(othello.getBoard().getSquare('c', 5));
 
-        assertThatIllegalStateException().isThrownBy(() -> othello.nextPly(black));
-        assertThat(othello.getBoard()).matches(BoardFactory.instance().newGame());
+        assertThatIllegalArgumentException().isThrownBy(() -> othello.nextPly(black));
     }
 
     @Nested
@@ -281,7 +276,6 @@ class OthelloTest {
         Othello othello = new Othello(black, white);
 
         Outcome outcome = othello.play();
-        System.out.println(othello.getBoard().pretty());
 
         Assertions.assertThat(outcome.getWinner()).isEqualTo(Winner.BLACK);
         Assertions.assertThat(outcome.getWinnerScore()).isEqualTo(35);

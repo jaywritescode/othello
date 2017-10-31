@@ -30,15 +30,15 @@ public class Othello {
         return gameOver();
     }
 
+    /**
+     * Plays the next ply of the game.
+     *
+     * @param current the player whose turn it is to move
+     * @return the player whose turn it is to move after {@code current} plays
+     * @throws IllegalArgumentException if given an illegal move
+     */
     public Player nextPly(Player current) {
-        Board.Square move;
-
-        do {
-            move = current.getMove(this);
-        } while (!move.isLegalMove(current.getColor()));
-
-        board.setPiece(move, current.getColor());
-
+        board.setPiece(current.getMove(this), current.getColor());
         return nextPlayer(current);
     }
 
