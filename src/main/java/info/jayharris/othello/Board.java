@@ -36,6 +36,7 @@ public class Board {
      *
      * @param square the square
      * @param color the color
+     * @throws IllegalArgumentException if this is not a legal move
      */
     public void setPiece(Square square, Color color) {
         Validate.isTrue(square.isLegalMove(color));
@@ -66,6 +67,12 @@ public class Board {
         }
     }
 
+    /**
+     * Returns {@code true} if there is a legal move for {@code player}.
+     *
+     * @param player the player
+     * @return {@code true} if there is a legal move for {@code player}
+     */
     public boolean hasMoveFor(Player player) {
         return hasMoveFor(player.getColor());
     }
@@ -79,7 +86,7 @@ public class Board {
     }
 
     /**
-     * Get the square given by the file and rank in algebraic notation
+     * Returns the square referenced by {@code file} and {@code rank}.
      *
      * @param file the file
      * @param rank the rank
@@ -90,6 +97,7 @@ public class Board {
     }
 
     /**
+     * Returns a set of occupied squares.
      *
      * @return an unmodifiable view of the set of occupied squares
      */
@@ -98,6 +106,7 @@ public class Board {
     }
 
     /**
+     * Returns a set of unoccupied squares adjacent to at least one occupied square.
      *
      * @return an unmodifiable view of the set of potential moves
      */
@@ -106,7 +115,7 @@ public class Board {
     }
 
     /**
-     * Create the board for a new game.
+     * Creates the board for a new game.
      *
      * @return the board
      */
@@ -140,7 +149,7 @@ public class Board {
     }
 
     /**
-     * Get a pretty text-string version of the board.
+     * Returns a pretty text-string version of the board.
      *
      * @return a representation of the board
      */
@@ -248,7 +257,7 @@ public class Board {
         }
 
         /**
-         * Get the square's color.
+         * Returns the square's color.
          *
          * @return the square's color
          */
@@ -261,16 +270,16 @@ public class Board {
         }
 
         /**
-         * Determine if this square is currently occupied.
+         * Returns {@code true} if this square is occupied.
          *
-         * @return true iff this square is occupied
+         * @return {@code true} iff this square is occupied
          */
         boolean isOccupied() {
             return Objects.nonNull(color);
         }
 
         /**
-         * Get this square's non-null neighboring squares.
+         * Returns this square's neighboring squares.
          *
          * @return a set of neighboring squares
          */
@@ -285,10 +294,10 @@ public class Board {
         }
 
         /**
-         * Determine if it's legal to play a {@code color} disc on this square.
+         * Returns {@code true} if it's legal to play a {@code color} disc on this square.
          *
          * @param color the color
-         * @return true iff this square is a legal play for {@code color}
+         * @return {@code true} iff this square is a legal play for {@code color}
          */
         boolean isLegalMove(Color color) {
             return !isOccupied() && EnumSet.allOf(Direction.class).stream()
@@ -297,7 +306,7 @@ public class Board {
         }
 
         /**
-         * Determine if {@code color} playing on this square will flips discs in {@code direction}
+         * Returns {@code true} if {@code color} playing on this square will flips discs in {@code direction}
          *
          * @param color
          * @param direction
@@ -380,7 +389,7 @@ public class Board {
         }
 
         /**
-         * Get a pretty text-version of this square.
+         * Returns a pretty text-version of this square.
          *
          * @return a representation of this square
          */
@@ -397,7 +406,7 @@ public class Board {
         }
 
         /**
-         * Get the algebraic notation representation of this square.
+         * Returns the algebraic notation representation of this square.
          *
          * @return the square's algebraic notation
          */
@@ -428,19 +437,5 @@ public class Board {
         public int hashCode() {
             return Objects.hash(RANK, FILE);
         }
-    }
-
-    public static void main(String... args) {
-        Board board = Board.init();
-
-        System.out.println(board.pretty());
-
-        board.setPiece(board.getSquare('c', 4), Color.BLACK);
-
-        System.out.println(board.pretty());
-
-        board.setPiece(board.getSquare('e', 3), Color.WHITE);
-
-        System.out.println(board.pretty());
     }
 }
