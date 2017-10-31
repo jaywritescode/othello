@@ -135,6 +135,10 @@ public class Board {
         return board;
     }
 
+    public long count(Color color) {
+        return occupied.stream().filter(square -> square.getColor() == color).count();
+    }
+
     /**
      * Get a pretty text-string version of the board.
      *
