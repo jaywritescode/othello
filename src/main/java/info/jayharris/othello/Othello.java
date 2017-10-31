@@ -65,21 +65,8 @@ public class Othello {
     }
 
     public static void main(String... args) {
-        Othello othello = new Othello(new TerminalPlayer(Color.BLACK), new RandomMovePlayer(Color.WHITE));
-        Outcome outcome = othello.play();
-
-        switch (outcome.getWinner()) {
-            case BLACK:
-                System.out.println("black wins");
-                break;
-            case WHITE:
-                System.out.println("white wins");
-                break;
-            case TIE:
-            default:
-                System.out.println("it's a tie");
-                break;
-        }
-        System.out.println(String.format("the score is %s to %s", outcome.getWinnerScore(), outcome.getLoserScore()));
+        Othello othello = new Othello(new RandomMovePlayer(Color.BLACK), new RandomMovePlayer(Color.WHITE));
+        othello.play();
+        System.out.println(othello.getBoard().pretty());
     }
 }
