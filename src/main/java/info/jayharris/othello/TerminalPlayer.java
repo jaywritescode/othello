@@ -25,18 +25,54 @@ public class TerminalPlayer extends Player {
         System.out.print(String.format("%s to move: ", getColor()));
 
         Square move = null;
+        while (true) {
+            try {
+                move = getLegalMove(othello);
+            }
+            catch (InvalidInputException e) {
+                System.out.println(e.getMessage());
+            }
+
+            return move;
+        }
+    }
+
+    private Square getLegalMove(Othello othello) throws InvalidInputException {
         Set<Square> legalMoves = getLegalMoves(othello.getBoard());
 
+        Square move;
         try {
             String line;
-            if (pattern.matcher(line = reader.readLine()).matches()) {
-                move = othello.getBoard().getSquare(line.charAt(0), Integer.parseInt(line.substring(1)));
+            if (!pattern.matcher(line = reader.readLine()).matches()) {
+                throw new InvalidAlgebraicNotationException(line);
             }
+            move = othello.getBoard().getSquare(line.charAt(0), Integer.parseInt(line.substring(1)));
         }
         catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return legalMoves.contains(move) ? move : null;
+        if (!legalMoves.contains(move)) {
+            throw new IllegalMoveException(move);
+        }
+        return move;
+    }
+
+    private class InvalidInputException extends Exception {
+        public InvalidInputException(String s) {
+            super(s);
+        }
+    }
+
+    private class InvalidAlgebraicNotationException extends InvalidInputException {
+        InvalidAlgebraicNotationException(String input) {
+            super(String.format("%s is not valid algebraic notation.", input));
+        }
+    }
+
+    private class IllegalMoveException extends InvalidInputException {
+        IllegalMoveException(Square square) {
+            super(String.format("%s is an illegal move.", square.algebraicNotation()));
+        }
     }
 }
