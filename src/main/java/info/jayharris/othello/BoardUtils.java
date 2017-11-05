@@ -8,6 +8,17 @@ import java.util.function.Function;
 
 public class BoardUtils {
 
+    public static boolean matches(Board a, Board b) {
+        for (int file = 0; file < Board.SIZE; ++file) {
+            for (int rank = 0; rank < Board.SIZE; ++rank) {
+                if (a.getSquare(rank, file).getColor() != b.getSquare(rank, file).getColor()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public static DirectionalIterator directionalIterator(Square start, Direction direction) {
         return new DirectionalIterator(start, direction);
     }
