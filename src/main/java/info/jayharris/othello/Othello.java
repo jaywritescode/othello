@@ -15,6 +15,7 @@ public class Othello {
 
     private final Board board;
     private final Player black, white;
+    private int turnsPlayed = 0;
 
     public Othello(Player black, Player white) {
         this.board = Board.init();
@@ -35,15 +36,27 @@ public class Othello {
      *
      * @param current the player whose turn it is to move
      * @return the player whose turn it is to move after {@code current} plays
-     * @throws IllegalArgumentException if given an illegal move
      */
     public Player nextPly(Player current) {
-        board.setPiece(current.getMove(this), current.getColor());
-        return nextPlayer(current);
+        current.begin(this);
+        while (true) {
+            try {
+                board.setPiece(current.getMove(this), current.getColor());
+
+                ++turnsPlayed;
+                current.done(this);
+                return nextPlayer(current);
+            }
+            catch (IllegalArgumentException e) {
+                current.fail(this, e);
+            }
+        }
     }
 
     private Player nextPlayer(Player current) {
-        Player next = (current == black ? white : black);
+        Player next;
+
+        next = (current == black ? white : black);
 
         if (board.hasMoveFor(next)) {
             return next;
@@ -62,6 +75,10 @@ public class Othello {
 
     public Board getBoard() {
         return board;
+    }
+
+    public int getTurnsPlayed() {
+        return turnsPlayed;
     }
 
     public static void main(String... args) {

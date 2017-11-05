@@ -5,17 +5,18 @@ import info.jayharris.othello.Othello.Color;
 import info.jayharris.othello.Outcome.Winner;
 import org.apache.commons.collections4.IteratorUtils;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.lang.reflect.Field;
 import java.util.Iterator;
 
 import static info.jayharris.othello.BoardAssert.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.*;
 
 
 class OthelloTest {
@@ -29,57 +30,104 @@ class OthelloTest {
     }
 
     @Test
-    @DisplayName("runs the next ply")
-    void nextPly() throws Exception {
+    @DisplayName("run the entire game")
+    void endToEndTest() {
+        Iterator<Character> moves = IteratorUtils.arrayIterator(new StringBuilder()
+                .append("d3c5f6f5e6e3c3f3c4b4b5c2a3b3d2c1e1d7e7a4a5d6c6a6a7b6d8b2c7f8")
+                .append("f2g5e8f7g3d1f4e2f1h3g2c8g6h5h4g4h2b7a8h1b8g7b1a1a2g1g8h8h7h6")
+                .toString()
+                .toCharArray());
+
         Player black = new Player(Color.BLACK) {
             @Override
             public Square getMove(Othello othello) {
-                return othello.getBoard().getSquare('c', 4);
+                char file = moves.next();
+                int rank = moves.next() - '1' + 1;
+
+                return othello.getBoard().getSquare(file, rank);
             }
         };
+
         Player white = new Player(Color.WHITE) {
             @Override
             public Square getMove(Othello othello) {
-                return null;
+                char file = moves.next();
+                int rank = moves.next() - '1' + 1;
+
+                return othello.getBoard().getSquare(file, rank);
             }
         };
 
         Othello othello = new Othello(black, white);
 
-        assertSame(white, othello.nextPly(black));
-        assertThat(othello.getBoard()).matches(BoardFactory.instance().fromString(
-                "        " +
-                "        " +
-                "        " +
-                "  bbb   " +
-                "   bw   " +
-                "        " +
-                "        " +
-                "        "
-        ));
+        Outcome outcome = othello.play();
+
+        Assertions.assertThat(outcome.getWinner()).isEqualTo(Winner.BLACK);
+        Assertions.assertThat(outcome.getWinnerScore()).isEqualTo(35);
+        Assertions.assertThat(outcome.getLoserScore()).isEqualTo(29);
     }
 
-    @Test
-    @DisplayName("should not play an illegal move")
-    void nextPlyIllegalMove() throws Exception {
-        Player black = new Player(Color.BLACK) {
-            @Override
-            public Square getMove(Othello othello) {
-                return othello.getBoard().getSquare('a', 1);
-            }
-        };
-        Player white = new Player(Color.WHITE) {
-            @Override
-            public Square getMove(Othello othello) {
-                return null;
-            }
-        };
+    @Nested
+    @DisplayName("next ply")
+    @TestInstance(Lifecycle.PER_CLASS)
+    class NextPly {
 
-        Othello othello = new Othello(black, white);
+        Othello othello;
 
-        assertThatIllegalArgumentException().isThrownBy(() -> othello.nextPly(black));
+        @Mock Player black;
+        @Mock Player white;
+
+        @BeforeAll
+        void init() throws Exception {
+            MockitoAnnotations.initMocks(this);
+
+            when(black.getColor()).thenReturn(Color.BLACK);
+            when(white.getColor()).thenReturn(Color.WHITE);
+        }
+
+        @BeforeEach
+        void initTest() throws Exception {
+            othello = new Othello(black, white);
+        }
+
+        @Test
+        @DisplayName("given a legal move")
+        void testNextPlyLegalMove() throws Exception {
+            when(black.getMove(othello)).thenReturn(othello.getBoard().getSquare('c', 4));
+
+            Player nextPlayer = othello.nextPly(black);
+
+            verify(black).begin(othello);
+            assertThat(othello.getBoard()).matches(BoardFactory.instance().fromString(
+                    "        " +
+                    "        " +
+                    "        " +
+                    "  bbb   " +
+                    "   bw   " +
+                    "        " +
+                    "        " +
+                    "        "
+            ));
+            Assertions.assertThat(othello.getTurnsPlayed()).isEqualTo(1);
+            verify(black).done(othello);
+            verify(black, never()).fail(any(), any());
+            Assertions.assertThat(nextPlayer).isSameAs(white);
+        }
+
+        @Test
+        @DisplayName("given an illegal move")
+        void testNextPlyIllegalMove() throws Exception {
+            when(black.getMove(othello))
+                    .thenReturn(othello.getBoard().getSquare('a', 1))
+                    .thenReturn(othello.getBoard().getSquare('c', 4));
+
+            othello.nextPly(black);
+
+            verify(black).fail(same(othello), any(IllegalArgumentException.class));
+        }
     }
 
+    // TODO: should be moved to NextPly class
     @Nested
     @DisplayName("next player")
     class NextPlayer {
@@ -242,43 +290,5 @@ class OthelloTest {
             Assertions.assertThat(actual.getWinnerScore()).isEqualTo(32);
             Assertions.assertThat(actual.getLoserScore()).isEqualTo(32);
         }
-    }
-
-    @Test
-    @DisplayName("run the entire game")
-    void endToEndTest() {
-        Iterator<Character> moves = IteratorUtils.arrayIterator(new StringBuilder()
-                .append("d3c5f6f5e6e3c3f3c4b4b5c2a3b3d2c1e1d7e7a4a5d6c6a6a7b6d8b2c7f8")
-                .append("f2g5e8f7g3d1f4e2f1h3g2c8g6h5h4g4h2b7a8h1b8g7b1a1a2g1g8h8h7h6")
-                .toString()
-                .toCharArray());
-
-        Player black = new Player(Color.BLACK) {
-            @Override
-            public Square getMove(Othello othello) {
-                char file = moves.next();
-                int rank = moves.next() - '1' + 1;
-
-                return othello.getBoard().getSquare(file, rank);
-            }
-        };
-
-        Player white = new Player(Color.WHITE) {
-            @Override
-            public Square getMove(Othello othello) {
-                char file = moves.next();
-                int rank = moves.next() - '1' + 1;
-
-                return othello.getBoard().getSquare(file, rank);
-            }
-        };
-
-        Othello othello = new Othello(black, white);
-
-        Outcome outcome = othello.play();
-
-        Assertions.assertThat(outcome.getWinner()).isEqualTo(Winner.BLACK);
-        Assertions.assertThat(outcome.getWinnerScore()).isEqualTo(35);
-        Assertions.assertThat(outcome.getLoserScore()).isEqualTo(29);
     }
 }

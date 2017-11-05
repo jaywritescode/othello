@@ -25,4 +25,26 @@ public abstract class Player {
                 .filter(it -> it.isLegalMove(color))
                 .collect(Collectors.toSet());
     }
+
+    /**
+     * Called when the player begins their turn, for any necessary pre-processing.
+     *
+     * @param othello
+     */
+    public void begin(Othello othello) { }
+
+    /**
+     * Called when the player finishes their turn, for any necessary post-processing.
+     *
+     * @param othello
+     */
+    public void done(Othello othello) { }
+
+    /**
+     * Called when the player's move failed.
+     *
+     * @param othello
+     * @param exception the exception that caused the failure
+     */
+    public void fail(Othello othello, Exception exception) { }
 }

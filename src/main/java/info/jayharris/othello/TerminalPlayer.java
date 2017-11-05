@@ -6,73 +6,70 @@ import info.jayharris.othello.Othello.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Set;
+import java.io.PrintStream;
 import java.util.regex.Pattern;
 
 public class TerminalPlayer extends Player {
 
+    enum MoveState {
+        IDLE, ACTIVE
+    };
+
     BufferedReader reader;
+    MoveState state = MoveState.IDLE;
+
+    final PrintStream out;
     final static Pattern pattern = Pattern.compile("^[a-h][1-8]$", Pattern.CASE_INSENSITIVE);
 
+    final static String
+            INVALID_MSG_TPL = "%s is invalid algebraic notation. Try again: ",
+            ILLEGAL_MOVE_MSG = "Illegal move!",
+            PLAYER_TO_MOVE_MSG_TPL = "%s to move: ";
+
     public TerminalPlayer(Color color) {
+        this(color, System.out);
+    }
+
+    public TerminalPlayer(Color color, PrintStream out) {
         super(color);
-        reader = new BufferedReader(new InputStreamReader(System.in));
+        this.out = out;
+        this.reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
     @Override
     public Square getMove(Othello othello) {
-        System.out.println(othello.getBoard().pretty());
-        System.out.print(String.format("%s to move: ", getColor()));
+        out.print(String.format(PLAYER_TO_MOVE_MSG_TPL, getColor()));
 
-        Square move = null;
-        while (true) {
-            try {
-                move = getLegalMove(othello);
-            }
-            catch (InvalidInputException e) {
-                System.out.println(e.getMessage());
-            }
+        state = MoveState.ACTIVE;
 
-            return move;
-        }
-    }
+        String line;
+        char file;
+        int rank;
 
-    private Square getLegalMove(Othello othello) throws InvalidInputException {
-        Set<Square> legalMoves = getLegalMoves(othello.getBoard());
-
-        Square move;
         try {
-            String line;
-            if (!pattern.matcher(line = reader.readLine()).matches()) {
-                throw new InvalidAlgebraicNotationException(line);
+            while (true) {
+                if (pattern.matcher(line = reader.readLine()).matches()) {
+                    file = line.charAt(0);
+                    rank = Integer.parseInt(line.substring(1));
+
+                    return othello.getBoard().getSquare(file, rank);
+                }
+
+                out.println(String.format(INVALID_MSG_TPL, line));
             }
-            move = othello.getBoard().getSquare(line.charAt(0), Integer.parseInt(line.substring(1)));
         }
         catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        if (!legalMoves.contains(move)) {
-            throw new IllegalMoveException(move);
-        }
-        return move;
     }
 
-    private class InvalidInputException extends Exception {
-        public InvalidInputException(String s) {
-            super(s);
-        }
+    @Override
+    public void begin(Othello othello) {
+        out.println(state == MoveState.IDLE ? othello.getBoard().pretty() : ILLEGAL_MOVE_MSG);
     }
 
-    private class InvalidAlgebraicNotationException extends InvalidInputException {
-        InvalidAlgebraicNotationException(String input) {
-            super(String.format("%s is not valid algebraic notation.", input));
-        }
-    }
-
-    private class IllegalMoveException extends InvalidInputException {
-        IllegalMoveException(Square square) {
-            super(String.format("%s is an illegal move.", square.algebraicNotation()));
-        }
+    @Override
+    public void done(Othello othello) {
+        state = MoveState.IDLE;
     }
 }
