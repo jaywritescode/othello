@@ -7,15 +7,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.BufferedReader;
+import java.io.PrintStream;
 import java.lang.reflect.Field;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class TerminalPlayerTest {
 
-    static Field readerField;
+    static Field readerField, printStreamField;
 
     Player player;
     Othello othello;
@@ -24,31 +25,38 @@ class TerminalPlayerTest {
 
     @BeforeAll
     void init() throws Exception {
-        MockitoAnnotations.initMocks(this);
-
         readerField = TerminalPlayer.class.getDeclaredField("reader");
         readerField.setAccessible(true);
     }
 
     @BeforeEach
     void initTest() throws Exception {
+        MockitoAnnotations.initMocks(this);
+
         player = new TerminalPlayer(Color.BLACK);
         othello = new Othello(player, null);
 
         readerField.set(player, mockReader);
     }
 
-    @Test
-    @DisplayName("gets the correct square")
-    void testGetMove() throws Exception {
-        when(mockReader.readLine()).thenReturn("e6");
-        assertThat(player.getMove(othello)).isSameAs(othello.getBoard().getSquare('e', 6));
-    }
+    @Nested
+    @DisplayName("#getMove")
+    class GetMove {
 
-    @Test
-    @DisplayName("given invalid algebraic notation")
-    void testGetMoveInvalid() throws Exception {
-        when(mockReader.readLine()).thenReturn("m9");
-        assertThat(player.getMove(othello)).isNull();
+        @Test
+        @DisplayName("given valid algebraic notation")
+        void testValidAlgebraicNotation() throws Exception {
+            when(mockReader.readLine()).thenReturn("a4");
+            assertThat(player.getMove(othello)).isSameAs(othello.getBoard().getSquare('a', 4));
+        }
+
+        @Test
+        @DisplayName("given invalid algebraic notation")
+        void testInvalidAlgebraicNotation() throws Exception {
+            when(mockReader.readLine()).thenReturn("m9", "c6");
+
+            assertThat(player.getMove(othello)).isSameAs(othello.getBoard().getSquare('c', 6));
+            verify(mockReader, times(2)).readLine();
+        }
     }
 }
