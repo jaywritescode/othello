@@ -82,8 +82,10 @@ public class Othello {
     }
 
     public static void main(String... args) {
-        Othello othello = new Othello(new RandomMovePlayer(Color.BLACK), new RandomMovePlayer(Color.WHITE));
+        Othello othello = new Othello(new TerminalPlayer(Color.BLACK), new RandomMovePlayer(Color.WHITE));
         othello.play();
+
         System.out.println(othello.getBoard().pretty());
+        System.out.println(othello.gameOver());
     }
 }

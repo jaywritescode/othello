@@ -7,6 +7,9 @@ class Outcome {
     private final Winner winner;
     private final long winnerScore, loserScore;
 
+    final String WINNER_TPL = "%s wins! (%s-%s)";
+    final String TIE_TPL = "It's a tie! (%s-%s)";
+
     private Outcome(Winner winner, long winnerScore, long loserScore) {
         this.winner = winner;
         this.winnerScore = winnerScore;
@@ -31,6 +34,14 @@ class Outcome {
 
     public long getLoserScore() {
         return loserScore;
+    }
+
+    @Override
+    public String toString() {
+        if (winner == Winner.TIE) {
+            return String.format(TIE_TPL, getWinnerScore(), getLoserScore());
+        }
+        return String.format(WINNER_TPL, winner, getWinnerScore(), getLoserScore());
     }
 
     private static class OutcomeBuilder {
