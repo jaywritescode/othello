@@ -17,7 +17,7 @@ public class Board {
 
     private final Square[][] squares;
     private final Set<Square> occupied;             // squares that are currently occupied
-    private final Set<Square> potentialMoves;       // squares that are unoccupied and ajacent to at least one occupied square
+    private final Set<Square> potentialMoves;       // squares that are unoccupied and adjacent to at least one occupied square
 
     private Board() {
         squares = new Square[SIZE][SIZE];

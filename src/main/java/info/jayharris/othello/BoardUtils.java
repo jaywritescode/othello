@@ -8,6 +8,13 @@ import java.util.function.Function;
 
 public class BoardUtils {
 
+    /**
+     * Returns true iff both boards have the same colors in the same squares.
+     *
+     * @param a a Board
+     * @param b another Board
+     * @return true iff both boards have the same colors in the same squares
+     */
     public static boolean matches(Board a, Board b) {
         for (int file = 0; file < Board.SIZE; ++file) {
             for (int rank = 0; rank < Board.SIZE; ++rank) {
