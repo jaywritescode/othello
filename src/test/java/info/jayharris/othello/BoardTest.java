@@ -3,10 +3,8 @@ package info.jayharris.othello;
 import info.jayharris.othello.Board.Square;
 import info.jayharris.othello.Othello.Color;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -48,6 +46,58 @@ public class BoardTest {
                 board.getSquare('f', 5),
                 board.getSquare('f', 6)
         );
+    }
+
+    @Nested
+    @DisplayName("::deepCopy")
+    @TestInstance(Lifecycle.PER_CLASS)
+    class DeepCopy {
+
+        Board board, copy;
+
+        @BeforeAll
+        void init() throws Exception {
+            board = BoardFactory.instance().fromString(
+                    " wwwww  " +
+                    "  wwwbb " +
+                    "w wwwbbb" +
+                    "wwbbbwbb" +
+                    "wwwbwbwb" +
+                    "wwbbbbbb" +
+                    " bbbww  " +
+                    "  bww   "
+            );
+
+            copy = Board.deepCopy(board);
+        }
+
+        @Test
+        @DisplayName("copy matches original")
+        void testCopyMatchesOriginal() throws Exception {
+            assertThat(copy).matches(board);
+        }
+
+        @Test
+        @DisplayName("copy's squares are different references from original's squares")
+        void testNotSameSquares() throws Exception {
+            for (int rank = 0; rank < Board.SIZE; ++rank) {
+                for (int file = 0; file < Board.SIZE; ++file) {
+                    assertThat(copy.getSquare(rank, file)).isNotSameAs(board.getSquare(rank, file));
+                }
+            }
+        }
+
+        @Test
+        @DisplayName("copy's occupied set points to copy's squares")
+        void testCopyOccupiedSquaresBelongOnlyToCopy() throws Exception {
+            copy.getOccupied().forEach(copySquare -> assertThat(copySquare).isSameAs(copy.getSquare(copySquare.RANK, copySquare.FILE)));
+        }
+
+        @Test
+        @DisplayName("copy's potential moves set points to copy's squares")
+        void testCopyPotentialMovesBelongOnlyToCopy() throws Exception {
+            copy.getPotentialMoves().forEach(copySquare -> assertThat(copySquare).isSameAs(copy.getSquare(copySquare.RANK, copySquare.FILE)));
+        }
     }
 
     @Nested

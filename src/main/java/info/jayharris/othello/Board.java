@@ -31,6 +31,21 @@ public class Board {
         potentialMoves = new HashSet<>();
     }
 
+    private Board(Board original) {
+        this();
+
+        for (int rank = 0; rank < SIZE; ++rank) {
+            for (int file = 0; file < SIZE; ++file) {
+                this.getSquare(rank, file).setColor(original.getSquare(rank, file).getColor());
+            }
+        }
+
+        original.getOccupied().forEach(originalSquare ->
+            this.occupied.add(this.getSquare(originalSquare.RANK, originalSquare.FILE)));
+        original.getPotentialMoves().forEach(originalSquare ->
+            this.potentialMoves.add(this.getSquare(originalSquare.RANK, originalSquare.FILE)));
+    }
+
     /**
      * Put a disc of the given color on the given square, if it's a legal move.
      *
@@ -142,6 +157,16 @@ public class Board {
                         .collect(Collectors.toSet()));
 
         return board;
+    }
+
+    /**
+     * Creates a deep copy of the original board.
+     *
+     * @param original the original board
+     * @return a copy of the board that is completely independent from the original
+     */
+    public static Board deepCopy(Board original) {
+        return new Board(original);
     }
 
     public long count(Color color) {
