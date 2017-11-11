@@ -113,7 +113,7 @@ public class BoardTest {
 
             Set<Square> actual = board.getPotentialMoves();
             Set<Square> expected = Stream.concat(original.stream(), move.getNeighbors().stream())
-                    .filter(it -> !it.isOccupied())
+                    .filter(Square::isUnoccupied)
                     .collect(Collectors.toSet());
 
             assertThat(actual).isEqualTo(expected);

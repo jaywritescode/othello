@@ -33,7 +33,7 @@ public class GreedyPlayer extends Player {
 
     private int discsFlippedInDirection(Square square, Direction direction) {
         Square neighbor = direction.go(square);
-        if (neighbor == null || neighbor.getColor() == null || neighbor.getColor() == color) {
+        if (neighbor == null || neighbor.isUnoccupied() || neighbor.getColor() == color) {
             return 0;
         }
 
@@ -41,7 +41,7 @@ public class GreedyPlayer extends Player {
         DirectionalIterator iter = BoardUtils.directionalIterator(neighbor, direction);
         while (iter.hasNext()) {
             neighbor = iter.next();
-            if (neighbor.getColor() == null) {
+            if (neighbor.isUnoccupied()) {
                 return 0;
             }
             if (neighbor.getColor() == color) {

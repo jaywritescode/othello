@@ -61,7 +61,7 @@ public class BoardFactory {
 
         potentialMovesField.set(board, occupied.stream()
                 .flatMap(sq -> sq.getNeighbors().stream())
-                .filter(it -> !it.isOccupied())
+                .filter(Square::isUnoccupied)
                 .collect(Collectors.toSet()));
         return board;
     }

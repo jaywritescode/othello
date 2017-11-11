@@ -48,7 +48,7 @@ public class Board {
         potentialMoves.remove(square);
         potentialMoves.addAll(
                 square.getNeighbors().stream()
-                        .filter(it -> !it.isOccupied())
+                        .filter(Square::isUnoccupied)
                         .collect(Collectors.toSet()));
     }
 
@@ -138,7 +138,7 @@ public class Board {
         board.potentialMoves.addAll(
                 board.occupied.stream()
                         .flatMap(square -> square.getNeighbors().stream())
-                        .filter(it -> !it.isOccupied())
+                        .filter(Square::isUnoccupied)
                         .collect(Collectors.toSet()));
 
         return board;
@@ -274,8 +274,8 @@ public class Board {
          *
          * @return {@code true} iff this square is occupied
          */
-        boolean isOccupied() {
-            return Objects.nonNull(color);
+        boolean isUnoccupied() {
+            return Objects.isNull(color);
         }
 
         /**
@@ -300,7 +300,7 @@ public class Board {
          * @return {@code true} iff this square is a legal play for {@code color}
          */
         boolean isLegalMove(Color color) {
-            return !isOccupied() && EnumSet.allOf(Direction.class).stream()
+            return isUnoccupied() && EnumSet.allOf(Direction.class).stream()
                                             .anyMatch(direction -> willFlipLine(color, direction));
 
         }
@@ -315,14 +315,14 @@ public class Board {
          */
         boolean willFlipLine(Color color, Direction direction) {
             Square neighbor = direction.go(this);
-            if (neighbor == null || neighbor.getColor() == null || neighbor.getColor() == color) {
+            if (neighbor == null || neighbor.isUnoccupied() || neighbor.getColor() == color) {
                 return false;
             }
 
             DirectionalIterator iter = BoardUtils.directionalIterator(neighbor, direction);
             while (iter.hasNext()) {
                 neighbor = iter.next();
-                if (neighbor.getColor() == null) {
+                if (neighbor.isUnoccupied()) {
                     return false;
                 }
                 if (neighbor.getColor() == color) {
