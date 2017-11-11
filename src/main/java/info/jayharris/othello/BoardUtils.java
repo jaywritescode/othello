@@ -74,5 +74,14 @@ public class BoardUtils {
         public Square next() {
             return this.current = direction.go(current);
         }
+
+        public boolean hasUnoccupiedSquare() {
+            while (hasNext()) {
+                if (next().isUnoccupied()) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
