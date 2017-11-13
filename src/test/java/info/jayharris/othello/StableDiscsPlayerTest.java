@@ -30,22 +30,33 @@ public class StableDiscsPlayerTest {
         othello = new Othello(player, null);
     }
 
+
     @Test
-    @DisplayName("chooses the move with the highest score")
+    @DisplayName("chooses the move with more stable discs")
     void testGetMove() throws Exception {
         Board board = BoardFactory.instance().fromString(
-                "  w     " +
-                "  wwww  " +
-                "bbbbwwww" +
-                " wbwbbww" +
-                "wwbbwbww" +
-                "w bbbww " +
-                "  bbbbw " +
-                "   bbb  "
+                "   b    " +
+                "  wwwww " +
+                "   ww w " +
+                "bwwww wb" +
+                "bbwwwwwb" +
+                "bbwbwbwb" +
+                "bbwwbbb " +
+                "b wbbb  "
         );
         boardField.set(othello, board);
 
-        assertThat(player.getMove(othello)).isSameAs(board.getSquare('h', 8));
+        // scores:
+        // e1: 5
+        // f1: 5
+        // g1: 5
+        // a3: 6
+        // b3: 5
+        // c3: 5
+        // f4: 5
+        // b8: 10
+
+        assertThat(player.getMove(othello)).isSameAs(board.getSquare('b', 8));
     }
 
     @Test
