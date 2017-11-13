@@ -7,6 +7,7 @@ import info.jayharris.othello.Othello.Color;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -21,10 +22,24 @@ public class StableDiscsPlayer extends Player {
 
     @Override
     public Square getMove(Othello othello) {
-        return null;
+        final Board currentBoard = othello.getBoard();
+
+        return getLegalMoves(currentBoard).stream()
+                .max(Comparator.comparingLong(it -> {
+                    Board update = Board.deepCopy(currentBoard);
+                    update.setPiece(update.getSquare(it.RANK, it.FILE), color);
+                    return countStableDiscs(update);
+                }))
+                .orElseThrow(IllegalStateException::new);
     }
 
-    public Set<Square> getStableDiscs(Board board) {
+    private long countStableDiscs(Board board) {
+        Map<Color, Long> colors = getStableDiscs(board).stream()
+                .collect(Collectors.groupingBy(Square::getColor, Collectors.counting()));
+        return colors.getOrDefault(color, 0L) - colors.getOrDefault(color.opposite(), 0L);
+    }
+
+    public static Set<Square> getStableDiscs(Board board) {
         Set<Square> stable = new HashSet<>();
 
         class Corner {

@@ -31,6 +31,24 @@ public class StableDiscsPlayerTest {
     }
 
     @Test
+    @DisplayName("chooses the move with the highest score")
+    void testGetMove() throws Exception {
+        Board board = BoardFactory.instance().fromString(
+                "  w     " +
+                "  wwww  " +
+                "bbbbwwww" +
+                " wbwbbww" +
+                "wwbbwbww" +
+                "w bbbww " +
+                "  bbbbw " +
+                "   bbb  "
+        );
+        boardField.set(othello, board);
+
+        assertThat(player.getMove(othello)).isSameAs(board.getSquare('h', 8));
+    }
+
+    @Test
     @DisplayName("get all stable discs")
     void testGetAllStableDiscs() throws Exception {
         Board board = BoardFactory.instance().fromString(
