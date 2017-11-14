@@ -436,7 +436,7 @@ public class Board {
          * @return the square's algebraic notation
          */
         public String algebraicNotation() {
-            return String.format("%s%s", 'a' + FILE, '1' + RANK);
+            return String.format("%s%s", (char) ('a' + FILE), (char) ('1' + RANK));
         }
 
         @Override
