@@ -426,7 +426,7 @@ public class Board {
                 return "\u25cf";
             }
             else {
-                return " ";
+                return "\u00b7";
             }
         }
 
