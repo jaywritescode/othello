@@ -3,6 +3,11 @@ package info.jayharris.othello.heuristics;
 import info.jayharris.othello.Board;
 import info.jayharris.othello.Othello.Color;
 
+/**
+ * This heuristic counts the number of {@code color} discs on the board and
+ * prefers moves with lower counts (but not zero, which is a win for the
+ * opponent).
+ */
 public class EvaporationHeuristic extends HeuristicFunction {
 
     public EvaporationHeuristic(Color color) {

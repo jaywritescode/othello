@@ -10,6 +10,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * This heuristic prefers moves that leave {@code color} with the greatest
+ * number of stable discs.
+ */
 public class StableDiscsHeuristic extends HeuristicFunction {
 
     public StableDiscsHeuristic(Color color) {
@@ -18,10 +22,6 @@ public class StableDiscsHeuristic extends HeuristicFunction {
 
     @Override
     public long apply(Board board) {
-        return countStableDiscs(board);
-    }
-
-    private long countStableDiscs(Board board) {
         Map<Color, Long> colors = getStableDiscs(board).stream()
                 .collect(Collectors.groupingBy(Square::getColor, Collectors.counting()));
         return colors.getOrDefault(color, 0L) - colors.getOrDefault(color.opposite(), 0L);

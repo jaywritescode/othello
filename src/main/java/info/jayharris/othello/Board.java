@@ -47,7 +47,7 @@ public class Board {
     }
 
     /**
-     * Put a disc of the given color on the given square, if it's a legal move.
+     * Puts a disc of the given color on the given square, if it's a legal move.
      *
      * @param square the square
      * @param color the color
