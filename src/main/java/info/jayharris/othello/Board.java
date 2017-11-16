@@ -96,7 +96,7 @@ public class Board {
         return potentialMoves.stream().anyMatch(it -> it.isLegalMove(color));
     }
 
-    protected Square getSquare(int rank, int file) {
+    public Square getSquare(int rank, int file) {
         return squares[rank][file];
     }
 
@@ -257,7 +257,7 @@ public class Board {
         return result;
     }
 
-    class Square {
+    public class Square {
 
         final int RANK, FILE;
         Color color;
@@ -286,7 +286,7 @@ public class Board {
          *
          * @return the square's color
          */
-        Color getColor() {
+        public Color getColor() {
             return color;
         }
 
@@ -299,7 +299,7 @@ public class Board {
          *
          * @return {@code true} iff this square is occupied
          */
-        boolean isUnoccupied() {
+        public boolean isUnoccupied() {
             return Objects.isNull(color);
         }
 
@@ -308,7 +308,7 @@ public class Board {
          *
          * @return a set of neighboring squares
          */
-        Set<Square> getNeighbors() {
+        public Set<Square> getNeighbors() {
             if (neighbors == null) {
                 neighbors = EnumSet.allOf(Direction.class).stream()
                                     .map(direction -> direction.go(this))
@@ -324,7 +324,7 @@ public class Board {
          * @param color the color
          * @return {@code true} iff this square is a legal play for {@code color}
          */
-        boolean isLegalMove(Color color) {
+        public boolean isLegalMove(Color color) {
             return isUnoccupied() && EnumSet.allOf(Direction.class).stream()
                                             .anyMatch(direction -> willFlipLine(color, direction));
 

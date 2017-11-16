@@ -30,7 +30,7 @@ public class BoardUtils {
         return new DirectionalIterator(start, direction);
     }
 
-    enum Direction {
+    public enum Direction {
         NW(Square::getNW),
         N(Square::getN),
         NE(Square::getNE),
@@ -46,7 +46,7 @@ public class BoardUtils {
             this.fn = fn;
         }
 
-        Square go(Square from) {
+        public Square go(Square from) {
             return fn.apply(from);
         }
     }
@@ -55,7 +55,7 @@ public class BoardUtils {
      * An iterator that traverses the board in a given direction and stops
      * when it passes the edge of the board.
      */
-    static class DirectionalIterator implements Iterator<Square> {
+    public static class DirectionalIterator implements Iterator<Square> {
 
         Square current;
         final Direction direction;
