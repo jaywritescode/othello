@@ -26,7 +26,7 @@ public class BoardFactory {
         potentialMovesField.setAccessible(true);
     }
 
-    protected static BoardFactory instance() throws Exception {
+    public static BoardFactory instance() throws Exception {
         if (factory == null) {
             factory = new BoardFactory();
         }

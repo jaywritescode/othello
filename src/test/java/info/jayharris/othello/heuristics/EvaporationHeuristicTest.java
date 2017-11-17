@@ -1,5 +1,7 @@
-package info.jayharris.othello;
+package info.jayharris.othello.heuristics;
 
+import info.jayharris.othello.Board;
+import info.jayharris.othello.BoardFactory;
 import info.jayharris.othello.Othello.Color;
 import info.jayharris.othello.heuristics.EvaporationHeuristic;
 import org.junit.jupiter.api.DisplayName;
