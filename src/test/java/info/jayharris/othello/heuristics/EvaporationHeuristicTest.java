@@ -3,7 +3,6 @@ package info.jayharris.othello.heuristics;
 import info.jayharris.othello.Board;
 import info.jayharris.othello.BoardFactory;
 import info.jayharris.othello.Othello.Color;
-import info.jayharris.othello.heuristics.EvaporationHeuristic;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -43,6 +42,5 @@ public class EvaporationHeuristicTest {
         );
 
         assertThat(new EvaporationHeuristic(Color.WHITE).apply(board)).isEqualTo(-Long.MAX_VALUE);
-
     }
 }
