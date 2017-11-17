@@ -96,6 +96,10 @@ public class Board {
         return potentialMoves.stream().anyMatch(it -> it.isLegalMove(color));
     }
 
+    public Square getSquare(Square s) {
+        return getSquare(s.RANK, s.FILE);
+    }
+
     public Square getSquare(int rank, int file) {
         return squares[rank][file];
     }
