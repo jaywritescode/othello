@@ -1,5 +1,7 @@
 package info.jayharris.othello;
 
+import info.jayharris.othello.heuristics.FrontierEvaporationHeuristic;
+
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -82,7 +84,9 @@ public class Othello {
     }
 
     public static void main(String... args) {
-        Othello othello = new Othello(new TerminalPlayer(Color.BLACK), new RandomMovePlayer(Color.WHITE));
+        Othello othello = new Othello(
+                new TerminalPlayer(Color.BLACK),
+                new HeuristicPlayer(Color.WHITE, new FrontierEvaporationHeuristic(Color.WHITE)));
         othello.play();
 
         System.out.println(othello.getBoard().pretty());

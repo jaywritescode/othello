@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class PositionalPlayer extends Player {
 
     public final int[][] squareValues;
