@@ -263,7 +263,7 @@ public class Board {
 
     public class Square {
 
-        final int RANK, FILE;
+        public final int RANK, FILE;
         Color color;
 
         Square nw, n, ne, e, se, s, sw, w;

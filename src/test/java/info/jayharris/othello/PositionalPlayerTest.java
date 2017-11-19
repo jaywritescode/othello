@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Deprecated
 class PositionalPlayerTest {
 
     Player player;
