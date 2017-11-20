@@ -1,13 +1,13 @@
 package info.jayharris.othello;
 
 import info.jayharris.othello.Othello.Color;
+import info.jayharris.othello.players.TerminalPlayer;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.BufferedReader;
-import java.io.PrintStream;
 import java.lang.reflect.Field;
 
 import static org.assertj.core.api.Assertions.assertThat;

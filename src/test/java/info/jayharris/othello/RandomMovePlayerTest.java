@@ -2,6 +2,7 @@ package info.jayharris.othello;
 
 import info.jayharris.othello.Board.Square;
 import info.jayharris.othello.Othello.Color;
+import info.jayharris.othello.players.RandomMovePlayer;
 import org.junit.jupiter.api.*;
 
 import java.lang.reflect.Field;

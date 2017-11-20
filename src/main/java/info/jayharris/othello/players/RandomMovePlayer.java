@@ -1,11 +1,12 @@
-package info.jayharris.othello;
+package info.jayharris.othello.players;
 
 import info.jayharris.othello.Board.Square;
+import info.jayharris.othello.Othello;
 import info.jayharris.othello.Othello.Color;
+import info.jayharris.othello.Player;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class RandomMovePlayer extends Player {

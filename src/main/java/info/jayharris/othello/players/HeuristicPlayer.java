@@ -1,7 +1,10 @@
-package info.jayharris.othello;
+package info.jayharris.othello.players;
 
+import info.jayharris.othello.Board;
 import info.jayharris.othello.Board.Square;
+import info.jayharris.othello.Othello;
 import info.jayharris.othello.Othello.Color;
+import info.jayharris.othello.Player;
 import info.jayharris.othello.heuristics.HeuristicFunction;
 
 import java.util.Comparator;
