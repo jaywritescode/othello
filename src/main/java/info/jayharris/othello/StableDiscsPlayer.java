@@ -7,6 +7,7 @@ import info.jayharris.othello.players.HeuristicPlayer;
 /**
  * A player that tries to maximize the number of stable discs they have on the board.
  */
+@Deprecated
 public class StableDiscsPlayer extends HeuristicPlayer {
 
     public StableDiscsPlayer(Color color) {

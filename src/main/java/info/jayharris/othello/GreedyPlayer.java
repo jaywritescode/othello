@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
  * A player that uses a greedy heuristic to choose moves. That is, it always chooses
  * the move that will flip the most discs, and decides between ties arbitrarily.
  */
+@Deprecated
 public class GreedyPlayer extends Player {
 
     public GreedyPlayer(Color color) {

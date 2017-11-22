@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Deprecated
 public class StableDiscsPlayerTest {
 
     StableDiscsPlayer player;
