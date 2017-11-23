@@ -1,4 +1,4 @@
-package info.jayharris.othello;
+package info.jayharris.othello.players;
 
 import info.jayharris.othello.Othello.Color;
 import info.jayharris.othello.heuristics.StableDiscsHeuristic;

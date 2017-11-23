@@ -1,5 +1,6 @@
-package info.jayharris.othello;
+package info.jayharris.othello.players;
 
+import info.jayharris.othello.*;
 import info.jayharris.othello.Othello.Color;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +12,7 @@ import java.lang.reflect.Field;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Deprecated
-class PositionalPlayerTest {
+public class GreedyPlayerTest {
 
     Player player;
     Othello othello;
@@ -26,37 +27,25 @@ class PositionalPlayerTest {
 
     @BeforeEach
     void initTest() throws Exception {
-        player = new PositionalPlayer(Color.BLACK);
+        player = new GreedyPlayer(Color.BLACK);
         othello = new Othello(player, null);
     }
 
     @Test
-    @DisplayName("chooses the move with the highest score")
+    @DisplayName("chooses the move that flips the most pieces")
     void testGetMove() throws Exception {
         Board board = BoardFactory.instance().fromString(
                 "        " +
                 "        " +
-                "        " +
-                "   wb   " +
-                "   wbb  " +
-                "   www  " +
-                "    bw  " +
+                "    w   " +
+                "  bbbb  " +
+                "  wbbb  " +
+                "   wwww " +
+                "     b  " +
                 "        "
         );
         boardField.set(othello, board);
 
-        // Scores
-        // c3:   7 + 0 = 7
-        // c4:   4 + 0 = 4
-        // c5:   4 + 0 + 4 = 8
-        // c6:   7 + 0 = 7
-        // c7:  -4 + 4 = 0
-        // d7:  -3 + 4 = -1
-        // f8:   8 - 4 + 7 = 11
-        // g5:  -3 + 7 = 4
-        // g7: -24 + 7 = -17
-
-        assertThat(player.getMove(othello)).isSameAs(othello.getBoard().getSquare('f', 8));
+        assertThat(player.getMove(othello)).isSameAs(othello.getBoard().getSquare('d', 7));
     }
-
 }

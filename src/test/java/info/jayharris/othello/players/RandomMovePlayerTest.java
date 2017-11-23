@@ -1,7 +1,11 @@
-package info.jayharris.othello;
+package info.jayharris.othello.players;
 
+import info.jayharris.othello.Board;
 import info.jayharris.othello.Board.Square;
+import info.jayharris.othello.BoardFactory;
+import info.jayharris.othello.Othello;
 import info.jayharris.othello.Othello.Color;
+import info.jayharris.othello.Player;
 import info.jayharris.othello.players.RandomMovePlayer;
 import org.junit.jupiter.api.*;
 

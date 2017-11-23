@@ -1,13 +1,12 @@
-package info.jayharris.othello;
+package info.jayharris.othello.players;
 
-import info.jayharris.othello.Board.Square;
+import info.jayharris.othello.Board;
+import info.jayharris.othello.BoardFactory;
+import info.jayharris.othello.Othello;
 import info.jayharris.othello.Othello.Color;
 import org.junit.jupiter.api.*;
 
 import java.lang.reflect.Field;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

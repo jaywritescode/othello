@@ -1,9 +1,12 @@
-package info.jayharris.othello;
+package info.jayharris.othello.players;
 
 import info.jayharris.othello.Board.Square;
+import info.jayharris.othello.BoardUtils;
 import info.jayharris.othello.BoardUtils.Direction;
 import info.jayharris.othello.BoardUtils.DirectionalIterator;
+import info.jayharris.othello.Othello;
 import info.jayharris.othello.Othello.Color;
+import info.jayharris.othello.Player;
 
 import java.util.Comparator;
 import java.util.EnumSet;
