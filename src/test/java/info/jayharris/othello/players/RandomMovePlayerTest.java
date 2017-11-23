@@ -35,7 +35,6 @@ class RandomMovePlayerTest {
         othello = new Othello(player, null);
     }
 
-    @Test
     @RepeatedTest(20)
     @DisplayName("always gets a legal square")
     void testGetMove() throws Exception {
