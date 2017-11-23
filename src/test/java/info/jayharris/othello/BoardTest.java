@@ -263,4 +263,41 @@ public class BoardTest {
 
         assertTrue(board.getSquare('a', 6).isLegalMove(Color.BLACK));
     }
+
+    @Test
+    @DisplayName("two boards with the same color on each square should be #equals")
+    void testEquals() throws Exception {
+        String boardString =
+                "        " +
+                "   wb   " +
+                "  wb    " +
+                " bbwb   " +
+                "  www   " +
+                "        " +
+                "        " +
+                "        ";
+        Board aBoard = BoardFactory.instance().fromString(boardString),
+                anotherBoard = BoardFactory.instance().fromString(boardString);
+
+        assertEquals(aBoard, anotherBoard);
+    }
+
+    @Test
+    @DisplayName("two #equals boards should return the same #hashCode")
+    void testHashCode() throws Exception {
+        String boardString =
+                "        " +
+                "        " +
+                "  wb    " +
+                "  bbb   " +
+                " bwww   " +
+                " bw     " +
+                "        " +
+                "        ";
+
+        Board aBoard = BoardFactory.instance().fromString(boardString),
+                anotherBoard = BoardFactory.instance().fromString(boardString);
+
+        assertEquals(aBoard.hashCode(), anotherBoard.hashCode());
+    }
 }
