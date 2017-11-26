@@ -1,6 +1,7 @@
 package info.jayharris.othello;
 
 import info.jayharris.othello.heuristics.FrontierEvaporationHeuristic;
+import info.jayharris.othello.heuristics.GreedyHeuristic;
 import info.jayharris.othello.players.HeuristicPlayer;
 import info.jayharris.othello.players.TerminalPlayer;
 
@@ -74,7 +75,7 @@ public class Othello {
     public Outcome gameOver() {
         Map<Color, Long> scores = board.getOccupied().stream()
                 .collect(Collectors.groupingBy(Board.Square::getColor, Collectors.counting()));
-        return Outcome.whoWon(scores.get(Color.BLACK), scores.get(Color.WHITE));
+        return Outcome.whoWon(scores.getOrDefault(Color.BLACK, 0L), scores.getOrDefault(Color.WHITE, 0L));
     }
 
     public Board getBoard() {
@@ -88,7 +89,7 @@ public class Othello {
     public static void main(String... args) {
         Othello othello = new Othello(
                 new TerminalPlayer(Color.BLACK),
-                new HeuristicPlayer(Color.WHITE, new FrontierEvaporationHeuristic(Color.WHITE)));
+                new HeuristicPlayer(Color.WHITE, new GreedyHeuristic(Color.WHITE)));
         othello.play();
 
         System.out.println(othello.getBoard().pretty());
