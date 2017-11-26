@@ -98,7 +98,7 @@ class OthelloTest {
             Player nextPlayer = othello.nextPly(black);
 
             verify(black).begin(othello);
-            assertThat(othello.getBoard()).matches(BoardFactory.instance().fromString(
+            assertThat(othello.getBoard()).matches(BoardFactory.getFactory().fromString(
                     "        " +
                     "        " +
                     "        " +
@@ -139,7 +139,7 @@ class OthelloTest {
         @Test
         @DisplayName("other player has legal move")
         void testOtherPlayerHasLegalMove() throws Exception {
-            board = BoardFactory.instance().fromString(
+            board = BoardFactory.getFactory().fromString(
                     "        " +
                     "        " +
                     "   ww   " +
@@ -172,7 +172,7 @@ class OthelloTest {
         @Test
         @DisplayName("other player has no legal move")
         void testOtherPlayerHasNoLegalMove() throws Exception {
-            board = BoardFactory.instance().fromString(
+            board = BoardFactory.getFactory().fromString(
                     "        " +
                     "        " +
                     " wwwwwwb" +
@@ -205,7 +205,7 @@ class OthelloTest {
         @Test
         @DisplayName("neither player has a legal move")
         void testGameOver() throws Exception {
-            board = BoardFactory.instance().fromString(
+            board = BoardFactory.getFactory().fromString(
                     "wwwwwwww" +
                     "wwwwwwwb" +
                     "wbbbbbb " +
@@ -246,7 +246,7 @@ class OthelloTest {
         @Test
         @DisplayName("black wins")
         void testWinner() throws Exception {
-            board = BoardFactory.instance().fromString(
+            board = BoardFactory.getFactory().fromString(
                     "wbwwwwww" +
                     "wbbbbwwb" +
                     "wbwbwwwb" +
@@ -270,7 +270,7 @@ class OthelloTest {
         @Test
         @DisplayName("it's a tie")
         void testTie() throws Exception {
-            board = BoardFactory.instance().fromString(
+            board = BoardFactory.getFactory().fromString(
                     "wwwwwwwb" +
                     "bbbwwwwb" +
                     "wbwwwbwb" +

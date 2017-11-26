@@ -13,7 +13,7 @@ public class EvaporationHeuristicTest {
     @Test
     @DisplayName("returns the (negative) number of [color] discs on the board")
     public void testApplyWithDiscsOnBoard() throws Exception {
-        Board board = BoardFactory.instance().fromString(
+        Board board = BoardFactory.getFactory().fromString(
                 "b       " +
                 " b  w   " +
                 " bbw b  " +
@@ -30,7 +30,7 @@ public class EvaporationHeuristicTest {
     @Test
     @DisplayName("returns negative infinity if we have zero discs on the board")
     public void testApplyNoDiscsOnBoard() throws Exception {
-        Board board = BoardFactory.instance().fromString(
+        Board board = BoardFactory.getFactory().fromString(
                 "        " +
                 "  b     " +
                 "  bb    " +

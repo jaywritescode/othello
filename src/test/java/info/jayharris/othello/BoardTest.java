@@ -25,7 +25,7 @@ public class BoardTest {
     void testInit() throws Exception {
         Board board = Board.init();
 
-        assertThat(board).matches(BoardFactory.instance().newGame());
+        assertThat(board).matches(BoardFactory.getFactory().newGame());
         Assertions.assertThat(board.getOccupied()).containsOnly(
                 board.getSquare('d', 4),
                 board.getSquare('d', 5),
@@ -57,7 +57,7 @@ public class BoardTest {
 
         @BeforeAll
         void init() throws Exception {
-            board = BoardFactory.instance().fromString(
+            board = BoardFactory.getFactory().fromString(
                     " wwwww  " +
                     "  wwwbb " +
                     "w wwwbbb" +
@@ -108,7 +108,7 @@ public class BoardTest {
 
         @BeforeEach
         void init() throws Exception {
-            board = BoardFactory.instance().fromString(
+            board = BoardFactory.getFactory().fromString(
                     "        " +
                     "   w    " +
                     "  bww   " +
@@ -126,7 +126,7 @@ public class BoardTest {
             Square move = board.getSquare('e', 2);
             board.setPiece(move, Color.BLACK);
 
-            assertThat(board).matches(BoardFactory.instance().fromString(
+            assertThat(board).matches(BoardFactory.getFactory().fromString(
                     "        " +
                     "   wb   " +
                     "  bbb   " +
@@ -186,7 +186,7 @@ public class BoardTest {
         when(black.getColor()).thenReturn(Color.BLACK);
 
         Board board;
-        board = BoardFactory.instance().fromString(
+        board = BoardFactory.getFactory().fromString(
                 "wwwwwwww" +
                 "wwwwwwww" +
                 "wwwwwwww" +
@@ -200,7 +200,7 @@ public class BoardTest {
         assertFalse(board.hasMoveFor(white));
         assertFalse(board.hasMoveFor(black));
 
-        board = BoardFactory.instance().fromString(
+        board = BoardFactory.getFactory().fromString(
                 "   www  " +
                 "  bwwb b" +
                 "wbwwwwbb" +
@@ -218,7 +218,7 @@ public class BoardTest {
     @Test
     @DisplayName("should get the square's neighbors")
     void testGetNeighbors() throws Exception {
-        Board board = BoardFactory.instance().newGame();
+        Board board = BoardFactory.getFactory().newGame();
 
         Set<Square> expected = Stream.of(
                 board.getSquare('a', 4),
@@ -236,7 +236,7 @@ public class BoardTest {
     @Test
     @DisplayName("should tell if this move is legal")
     void testIsLegalMove() throws Exception {
-        Board board = BoardFactory.instance().fromString(
+        Board board = BoardFactory.getFactory().fromString(
                 "  wwww  " +
                 "b bwbw  " +
                 "bbbwbwww" +
@@ -276,8 +276,8 @@ public class BoardTest {
                 "        " +
                 "        " +
                 "        ";
-        Board aBoard = BoardFactory.instance().fromString(boardString),
-                anotherBoard = BoardFactory.instance().fromString(boardString);
+        Board aBoard = BoardFactory.getFactory().fromString(boardString),
+                anotherBoard = BoardFactory.getFactory().fromString(boardString);
 
         assertEquals(aBoard, anotherBoard);
     }
@@ -295,8 +295,8 @@ public class BoardTest {
                 "        " +
                 "        ";
 
-        Board aBoard = BoardFactory.instance().fromString(boardString),
-                anotherBoard = BoardFactory.instance().fromString(boardString);
+        Board aBoard = BoardFactory.getFactory().fromString(boardString),
+                anotherBoard = BoardFactory.getFactory().fromString(boardString);
 
         assertEquals(aBoard.hashCode(), anotherBoard.hashCode());
     }

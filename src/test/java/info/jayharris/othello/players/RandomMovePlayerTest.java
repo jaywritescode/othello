@@ -6,7 +6,6 @@ import info.jayharris.othello.BoardFactory;
 import info.jayharris.othello.Othello;
 import info.jayharris.othello.Othello.Color;
 import info.jayharris.othello.Player;
-import info.jayharris.othello.players.RandomMovePlayer;
 import org.junit.jupiter.api.*;
 
 import java.lang.reflect.Field;
@@ -38,7 +37,7 @@ class RandomMovePlayerTest {
     @RepeatedTest(20)
     @DisplayName("always gets a legal square")
     void testGetMove() throws Exception {
-        Board board = BoardFactory.instance().fromString(
+        Board board = BoardFactory.getFactory().fromString(
                 "        " +
                 "   w    " +
                 "  ww    " +

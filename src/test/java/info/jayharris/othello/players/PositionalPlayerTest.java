@@ -34,7 +34,7 @@ class PositionalPlayerTest {
     @Test
     @DisplayName("chooses the move with the highest score")
     void testGetMove() throws Exception {
-        Board board = BoardFactory.instance().fromString(
+        Board board = BoardFactory.getFactory().fromString(
                 "        " +
                 "        " +
                 "        " +

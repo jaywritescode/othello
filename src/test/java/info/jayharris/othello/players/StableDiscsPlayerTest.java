@@ -34,7 +34,7 @@ public class StableDiscsPlayerTest {
     @Test
     @DisplayName("chooses the move with more stable discs")
     void testGetMove() throws Exception {
-        Board board = BoardFactory.instance().fromString(
+        Board board = BoardFactory.getFactory().fromString(
                 "   b    " +
                 "  wwwww " +
                 "   ww w " +
@@ -62,7 +62,7 @@ public class StableDiscsPlayerTest {
 //    @Test
 //    @DisplayName("get all stable discs")
 //    void testGetAllStableDiscs() throws Exception {
-//        Board board = BoardFactory.instance().fromString(
+//        Board board = BoardFactory.getFactory().fromString(
 //                "   www  " +
 //                "  bwwb b" +
 //                "wbwwwwbb" +

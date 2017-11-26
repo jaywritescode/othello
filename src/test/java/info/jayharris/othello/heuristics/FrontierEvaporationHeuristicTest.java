@@ -13,7 +13,7 @@ public class FrontierEvaporationHeuristicTest {
     @Test
     @DisplayName("returns the (negative) number of [color] discs adjacent to an empty square")
     public void testFrontierEvaporationHeuristic() throws Exception {
-        Board board = BoardFactory.instance().fromString(
+        Board board = BoardFactory.getFactory().fromString(
                 "  wwww  " +
                 "b bwbw  " +
                 "bbbwbwww" +

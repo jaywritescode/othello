@@ -34,7 +34,7 @@ public class GreedyPlayerTest {
     @Test
     @DisplayName("chooses the move that flips the most pieces")
     void testGetMove() throws Exception {
-        Board board = BoardFactory.instance().fromString(
+        Board board = BoardFactory.getFactory().fromString(
                 "        " +
                 "        " +
                 "    w   " +

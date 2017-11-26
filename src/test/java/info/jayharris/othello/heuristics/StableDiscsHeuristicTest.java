@@ -13,7 +13,7 @@ public class StableDiscsHeuristicTest {
     @Test
     @DisplayName("returns the number of stable discs the player has less the number of stable discs the opponent has")
     public void testStableDiscsHeuristic() throws Exception {
-        Board board = BoardFactory.instance().fromString(
+        Board board = BoardFactory.getFactory().fromString(
                 "   www  " +
                 "  bwwb b" +
                 "wbwwwwbb" +

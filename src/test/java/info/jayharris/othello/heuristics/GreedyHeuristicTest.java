@@ -13,7 +13,7 @@ public class GreedyHeuristicTest {
     @Test
     @DisplayName("counts the number of our discs on the board")
     public void testGreedyHeuristic() throws Exception {
-        Board board = BoardFactory.instance().fromString(
+        Board board = BoardFactory.getFactory().fromString(
                 "        " +
                 "        " +
                 "    w   " +

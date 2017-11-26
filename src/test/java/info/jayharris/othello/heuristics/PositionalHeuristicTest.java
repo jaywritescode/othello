@@ -13,7 +13,7 @@ public class PositionalHeuristicTest {
     @Test
     @DisplayName("it adds the values of the squares we occupy minus the squares our opponent occupies")
     public void testPositionalHeuristic() throws Exception {
-        Board board = BoardFactory.instance().fromString(
+        Board board = BoardFactory.getFactory().fromString(
                 "        " +
                 "        " +
                 "        " +

@@ -1,6 +1,7 @@
 package info.jayharris.othello.players;
 
 import info.jayharris.othello.Board;
+import info.jayharris.othello.Board.Square;
 import info.jayharris.othello.BoardFactory;
 import info.jayharris.othello.Othello;
 import info.jayharris.othello.Othello.Color;
@@ -9,8 +10,6 @@ import info.jayharris.othello.heuristics.HeuristicFunction;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.lang.reflect.Field;
 import java.util.Comparator;
@@ -19,8 +18,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @TestInstance(Lifecycle.PER_CLASS)
 public class HeuristicPlayerTest {
@@ -36,13 +33,8 @@ public class HeuristicPlayerTest {
     void init() throws Exception {
         boardField = Othello.class.getDeclaredField("board");
         boardField.setAccessible(true);
-    }
 
-    @BeforeEach
-    void initTest() throws Exception {
-        MockitoAnnotations.initMocks(this);
-
-        Board board = BoardFactory.instance().fromString(
+        board = BoardFactory.getFactory().fromString(
                 "        " +
                 "  bw    " +
                 "  bb    " +
