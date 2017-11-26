@@ -22,12 +22,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestInstance(Lifecycle.PER_CLASS)
 public class HeuristicPlayerTest {
 
-    @Mock HeuristicFunction function;
+    HeuristicFunction maximizingFunction, minimizingFunction;
 
+    Board board;
     Player player;
     Othello othello;
 
     static Field boardField;
+
+    class TestHeuristicFunction extends HeuristicFunction {
+        Map<Board, Long> values;
+
+        public TestHeuristicFunction(Color color, Map<Board, Long> values) {
+            super(color);
+            this.values = values;
+        }
+
+        @Override
+        public long apply(Board board) {
+            return values.get(board);
+        }
+    }
 
     @BeforeAll
     void init() throws Exception {
@@ -45,6 +60,16 @@ public class HeuristicPlayerTest {
                 "        "
         );
 
+        maximizingFunction = new TestHeuristicFunction(Color.WHITE, createMappingForTestFunction(board));
+        minimizingFunction = new TestHeuristicFunction(Color.WHITE, createMappingForTestFunction(board)) {
+            @Override
+            public Comparator<Square> comparator(Board board) {
+                return super.comparator(board).reversed();
+            }
+        };
+    }
+
+    private Map<Board, Long> createMappingForTestFunction(Board board) {
         Map<Board, Long> mockHeuristicValues = new HashMap<>();
         Stream.of(
                 ImmutablePair.of(board.getSquare('c', 1), 5L),
@@ -59,18 +84,15 @@ public class HeuristicPlayerTest {
             copy.setPiece(copy.getSquare(pair.getLeft()), Color.WHITE);
             mockHeuristicValues.put(copy, pair.getRight());
         });
-
-        when(function.apply(any())).thenAnswer(invocation -> mockHeuristicValues.get(invocation.getArgument(0)));
-
-        player = new HeuristicPlayer(Color.WHITE, function);
-        othello = new Othello(null, player);
-        boardField.set(othello, board);
+        return mockHeuristicValues;
     }
 
     @Test
     @DisplayName("it chooses the move with the greatest heuristic value")
     void testMaximizingHeuristic() throws Exception {
-        HeuristicPlayer player = new HeuristicPlayer(Color.WHITE, function);
+        player = new HeuristicPlayer(Color.WHITE, maximizingFunction);
+        othello = new Othello(null, player);
+        boardField.set(othello, board);
 
         assertThat(player.getMove(othello)).isEqualTo(othello.getBoard().getSquare('f', 6));
     }
@@ -78,7 +100,9 @@ public class HeuristicPlayerTest {
     @Test
     @DisplayName("it chooses the move with the smallest heuristic value")
     void testMinimizingHeuristic() throws Exception {
-        HeuristicPlayer player = new HeuristicPlayer(Color.WHITE, HeuristicPlayer.minimize(function));
+        player = new HeuristicPlayer(Color.WHITE, minimizingFunction);
+        othello = new Othello(null, player);
+        boardField.set(othello, board);
 
         assertThat(player.getMove(othello)).isEqualTo(othello.getBoard().getSquare('b', 2));
     }

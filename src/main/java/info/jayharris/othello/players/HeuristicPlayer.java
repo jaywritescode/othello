@@ -7,7 +7,7 @@ import info.jayharris.othello.Othello.Color;
 import info.jayharris.othello.Player;
 import info.jayharris.othello.heuristics.HeuristicFunction;
 
-import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class HeuristicPlayer extends Player {
 
@@ -24,11 +24,7 @@ public class HeuristicPlayer extends Player {
 
         return getLegalMoves(currentBoard).stream()
                 .filter(it -> it.isLegalMove(color))
-                .max(Comparator.comparingLong(square -> {
-                    Board board = Board.deepCopy(currentBoard);
-                    board.setPiece(board.getSquare(square.RANK, square.FILE), color);
-                    return h.apply(board);
-                }))
+                .collect(Collectors.maxBy(h.comparator(currentBoard)))
                 .orElseThrow(IllegalStateException::new);
     }
 }
