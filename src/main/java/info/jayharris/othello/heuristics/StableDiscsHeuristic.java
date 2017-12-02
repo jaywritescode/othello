@@ -21,7 +21,7 @@ public class StableDiscsHeuristic extends HeuristicFunction {
     }
 
     /**
-     * Gets this player's stable discs less the opponent's stable discs.
+     * Counts this player's stable discs less the opponent's stable discs.
      *
      * @param board the board
      * @return this player's stable discs less the opponent's stable discs
