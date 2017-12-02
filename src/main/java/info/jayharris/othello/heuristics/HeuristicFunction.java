@@ -33,7 +33,7 @@ public abstract class HeuristicFunction {
     public abstract long apply(Board board);
 
     /**
-     * Get a comparator that compares the heuristic values of two boards and
+     * Gets a comparator that compares the heuristic values of two boards and
      * orders smaller values first.
      *
      * By default, the comparator copies the board, applies the move to the copied
