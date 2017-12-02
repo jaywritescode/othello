@@ -17,9 +17,15 @@ import java.util.stream.Stream;
 public class StableDiscsHeuristic extends HeuristicFunction {
 
     public StableDiscsHeuristic(Color color) {
-        super(color);
+        super(color, OptimizingReducers.MAXIMIZE_HEURISTIC_VALUE);
     }
 
+    /**
+     * Gets this player's stable discs less the opponent's stable discs.
+     *
+     * @param board the board
+     * @return this player's stable discs less the opponent's stable discs
+     */
     @Override
     public long apply(Board board) {
         Map<Color, Long> colors = getStableDiscs(board).stream()

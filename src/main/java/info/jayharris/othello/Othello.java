@@ -1,7 +1,6 @@
 package info.jayharris.othello;
 
-import info.jayharris.othello.heuristics.FrontierEvaporationHeuristic;
-import info.jayharris.othello.heuristics.GreedyHeuristic;
+import info.jayharris.othello.heuristics.*;
 import info.jayharris.othello.players.HeuristicPlayer;
 import info.jayharris.othello.players.TerminalPlayer;
 
