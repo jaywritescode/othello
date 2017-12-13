@@ -8,24 +8,6 @@ import java.util.function.Function;
 
 public class BoardUtils {
 
-    /**
-     * Returns true iff both boards have the same colors in the same squares.
-     *
-     * @param a a Board
-     * @param b another Board
-     * @return true iff both boards have the same colors in the same squares
-     */
-    public static boolean matches(Board a, Board b) {
-        for (int file = 0; file < Board.SIZE; ++file) {
-            for (int rank = 0; rank < Board.SIZE; ++rank) {
-                if (a.getSquare(rank, file).getColor() != b.getSquare(rank, file).getColor()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     public static DirectionalIterator directionalIterator(Square start, Direction direction) {
         return new DirectionalIterator(start, direction);
     }
@@ -82,6 +64,39 @@ public class BoardUtils {
                 }
             }
             return false;
+        }
+    }
+
+    public static BoardIterator boardIterator(Board board) {
+        return new BoardIterator(board);
+    }
+
+    public static class BoardIterator implements Iterator<Square> {
+
+        Board board;
+        int rank, file;
+
+        BoardIterator(Board board) {
+            this.board = board;
+            this.rank = 0;
+            this.file = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return rank <= Board.SIZE && file <= Board.SIZE;
+        }
+
+        @Override
+        public Square next() {
+            Square square = board.getSquare(rank, file);
+
+            rank = (rank + 1) % Board.SIZE;
+            if (rank == 0) {
+                ++file;
+            }
+
+            return square;
         }
     }
 }

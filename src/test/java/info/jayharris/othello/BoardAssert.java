@@ -1,6 +1,10 @@
 package info.jayharris.othello;
 
+import info.jayharris.othello.Board.Square;
+import org.apache.commons.collections4.iterators.ZippingIterator;
 import org.assertj.core.api.AbstractAssert;
+
+import java.util.Objects;
 
 public class BoardAssert extends AbstractAssert<BoardAssert, Board> {
 
@@ -15,8 +19,13 @@ public class BoardAssert extends AbstractAssert<BoardAssert, Board> {
     public BoardAssert matches(Board expected) {
         isNotNull();
 
-        if (!BoardUtils.matches(expected, actual)) {
-            failWithMessage("Expected <%s>\nbut got <%s>", expected.pretty(), actual.pretty());
+        ZippingIterator<Square> iter = new ZippingIterator<>(
+                BoardUtils.boardIterator(expected), BoardUtils.boardIterator(actual));
+
+        while (iter.hasNext()) {
+            if (!Objects.equals(iter.next().getColor(), iter.next().getColor())) {
+                failWithMessage("Expected <%s>\nbut got <%s>", expected.pretty(), actual.pretty());
+            }
         }
 
         return this;
