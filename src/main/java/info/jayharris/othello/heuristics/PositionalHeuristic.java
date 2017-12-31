@@ -32,7 +32,7 @@ public class PositionalHeuristic extends HeuristicFunction {
     }
 
     public PositionalHeuristic(Color color, int[][] squareValues) {
-        super(color);
+        super(color, OptimizingReducers.MAXIMIZE_HEURISTIC_VALUE);
         this.squareValues = squareValues;
     }
 

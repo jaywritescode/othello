@@ -9,7 +9,7 @@ import java.util.Comparator;
 public class GreedyHeuristic extends HeuristicFunction {
 
     public GreedyHeuristic(Color color) {
-        super(color);
+        super(color, OptimizingReducers.MAXIMIZE_HEURISTIC_VALUE);
     }
 
     @Override

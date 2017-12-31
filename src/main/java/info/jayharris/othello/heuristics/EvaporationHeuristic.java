@@ -11,11 +11,11 @@ import info.jayharris.othello.Othello.Color;
 public class EvaporationHeuristic extends HeuristicFunction {
 
     public EvaporationHeuristic(Color color) {
-        super(color);
+        super(color, OptimizingReducers.MINIMIZE_HEURISTIC_VALUE);
     }
 
     public long apply(Board board) {
         long count = board.count(color);
-        return -(count == 0 ? Long.MAX_VALUE : count);
+        return count == 0 ? Long.MAX_VALUE : count;
     }
 }

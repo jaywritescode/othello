@@ -11,7 +11,7 @@ import info.jayharris.othello.Othello.Color;
 public class FrontierEvaporationHeuristic extends HeuristicFunction {
 
     public FrontierEvaporationHeuristic(Color color) {
-        super(color);
+        super(color, OptimizingReducers.MINIMIZE_HEURISTIC_VALUE);
     }
 
     @Override

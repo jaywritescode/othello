@@ -10,14 +10,13 @@ import info.jayharris.othello.Othello.Color;
 public class MobilityHeuristic extends HeuristicFunction {
 
     public MobilityHeuristic(Color color) {
-        super(color);
+        super(color, OptimizingReducers.MINIMIZE_HEURISTIC_VALUE);
     }
 
     @Override
     public long apply(Board board) {
-        long count = board.getPotentialMoves().stream()
+        return board.getPotentialMoves().stream()
                 .filter(it -> it.isLegalMove(color.opposite()))
                 .count();
-        return -count;
     }
 }
