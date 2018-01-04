@@ -40,7 +40,7 @@ public class TerminalPlayer extends Player {
 
     @Override
     public Square getMove(Othello othello) {
-        out.print(String.format(PLAYER_TO_MOVE_MSG_TPL, othello.getTurnsPlayed() + 1, getColor()));
+        out.print(String.format(PLAYER_TO_MOVE_MSG_TPL, othello.getTurnNumber(), getColor()));
 
         state = MoveState.ACTIVE;
 

@@ -22,7 +22,6 @@ public class Othello {
 
     private final Board board;
     private final Player black, white;
-    private int turnsPlayed = 0;
     private List<Square> moves = new LinkedList<>();
 
     public Othello(Player black, Player white) {
@@ -87,8 +86,8 @@ public class Othello {
         return board;
     }
 
-    public int getTurnsPlayed() {
-        return turnsPlayed;
+    public int getTurnNumber() {
+        return moves.size() + 1;
     }
 
     public static void main(String... args) {

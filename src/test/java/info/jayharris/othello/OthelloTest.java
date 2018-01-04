@@ -108,7 +108,7 @@ class OthelloTest {
                     "        " +
                     "        "
             ));
-            Assertions.assertThat(othello.getTurnsPlayed()).isEqualTo(1);
+            Assertions.assertThat(othello.getTurnNumber()).isEqualTo(2);
             verify(black).done(othello);
             verify(black, never()).fail(any(), any());
             Assertions.assertThat(nextPlayer).isSameAs(white);
