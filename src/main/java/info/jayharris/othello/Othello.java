@@ -1,9 +1,12 @@
 package info.jayharris.othello;
 
+import info.jayharris.othello.Board.Square;
 import info.jayharris.othello.heuristics.*;
 import info.jayharris.othello.players.HeuristicPlayer;
 import info.jayharris.othello.players.TerminalPlayer;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -20,6 +23,7 @@ public class Othello {
     private final Board board;
     private final Player black, white;
     private int turnsPlayed = 0;
+    private List<Square> moves = new LinkedList<>();
 
     public Othello(Player black, Player white) {
         this.board = Board.init();
@@ -43,11 +47,13 @@ public class Othello {
      */
     public Player nextPly(Player current) {
         current.begin(this);
+
+        Square move;
         while (true) {
             try {
-                board.setPiece(current.getMove(this), current.getColor());
+                board.setPiece(move = current.getMove(this), current.getColor());
 
-                ++turnsPlayed;
+                moves.add(move);
                 current.done(this);
                 return nextPlayer(current);
             }
