@@ -26,7 +26,7 @@ public class TerminalPlayer extends Player {
     final static String
             INVALID_MSG_TPL = "%s is invalid algebraic notation. Try again: ",
             ILLEGAL_MOVE_MSG = "Illegal move!",
-            PLAYER_TO_MOVE_MSG_TPL = "%s to move: ";
+            PLAYER_TO_MOVE_MSG_TPL = "Ply %s >> %s to move: ";
 
     public TerminalPlayer(Color color) {
         this(color, System.out);
@@ -40,7 +40,7 @@ public class TerminalPlayer extends Player {
 
     @Override
     public Square getMove(Othello othello) {
-        out.print(String.format(PLAYER_TO_MOVE_MSG_TPL, getColor()));
+        out.print(String.format(PLAYER_TO_MOVE_MSG_TPL, othello.getTurnsPlayed() + 1, getColor()));
 
         state = MoveState.ACTIVE;
 
