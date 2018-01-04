@@ -5,6 +5,7 @@ import info.jayharris.othello.heuristics.*;
 import info.jayharris.othello.players.HeuristicPlayer;
 import info.jayharris.othello.players.TerminalPlayer;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +89,10 @@ public class Othello {
 
     public int getTurnNumber() {
         return moves.size() + 1;
+    }
+
+    public List<Square> getMoves() {
+        return Collections.unmodifiableList(moves);
     }
 
     public static void main(String... args) {
